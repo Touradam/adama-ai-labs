@@ -1,36 +1,197 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# A-dama AI Labs Website
+
+A modern, dual-journey website built with Next.js 14, Tailwind CSS, shadcn/ui, and Framer Motion.
+
+## Features
+
+- **Dual User Journeys**: Separate paths for students (Learn AI) and founders (Build With AI)
+- **Rich Animations**: Scroll-triggered animations with Framer Motion
+- **Fully Responsive**: Mobile-first design with smooth transitions
+- **Contact Form**: Functional email form with Resend integration
+- **Modern UI**: Built with shadcn/ui components and custom design system
+- **SEO Optimized**: Metadata, Open Graph tags, and semantic HTML
+
+## Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Styling**: Tailwind CSS v4
+- **UI Components**: shadcn/ui
+- **Animations**: Framer Motion
+- **Email**: Resend
+- **Icons**: Lucide React
+- **Notifications**: Sonner
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ 
+- npm or yarn
+
+### Installation
+
+1. Clone the repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd adama-ai-labs
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Set up environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create a `.env.local` file in the root directory:
 
-## Learn More
+```env
+# Resend API Key for sending emails
+# Get your API key from https://resend.com
+RESEND_API_KEY=your_resend_api_key_here
 
-To learn more about Next.js, take a look at the following resources:
+# Contact form recipient email
+CONTACT_EMAIL=hello@adamaailabs.com
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. Run the development server
+```bash
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## Deploy on Vercel
+## Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+adama-ai-labs/
+├── app/                      # Next.js App Router pages
+│   ├── page.tsx             # Home page
+│   ├── learn-ai/            # Student track page
+│   ├── build-with-ai/       # Founder track page
+│   ├── about/               # About page
+│   ├── contact/             # Contact page
+│   ├── api/contact/         # Contact form API route
+│   ├── layout.tsx           # Root layout
+│   └── globals.css          # Global styles & design tokens
+├── components/              # Reusable React components
+│   ├── ui/                  # shadcn/ui components
+│   ├── Navbar.tsx
+│   ├── Footer.tsx
+│   ├── Hero.tsx
+│   ├── FeatureCard.tsx
+│   ├── PathCard.tsx
+│   ├── CTASection.tsx
+│   ├── SectionWrapper.tsx
+│   └── AnimatedText.tsx
+├── data/                    # Structured content data
+│   ├── courses.ts
+│   ├── services.ts
+│   ├── site-config.ts
+│   ├── case-studies.ts
+│   └── testimonials.ts
+└── lib/                     # Utility functions
+    └── utils.ts
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Design System
+
+### Colors
+
+- **Deep Charcoal**: `#1A1A1A` - Primary text and brand color
+- **AI Blue**: `#2374F2` - Student track accent
+- **Energy Orange**: `#F7A536` - Founder track accent
+- **Soft Gray**: `#F5F5F7` - Background sections
+
+### Typography
+
+- **Headings**: Plus Jakarta Sans
+- **Body**: Inter
+- **Mobile-first**: Responsive font scaling
+
+### Breakpoints
+
+- **Mobile**: < 768px
+- **Tablet**: 768px - 1024px
+- **Desktop**: > 1024px
+
+## Pages
+
+- **Home (`/`)**: Overview with dual CTAs and featured offerings
+- **Learn AI (`/learn-ai`)**: Student courses and education track
+- **Build With AI (`/build-with-ai`)**: Business services and automation
+- **About (`/about`)**: Mission, story, and team background
+- **Contact (`/contact`)**: Contact form with role selector
+
+## Email Configuration
+
+The contact form uses [Resend](https://resend.com) for email delivery.
+
+1. Sign up for a Resend account
+2. Verify your domain or use their test domain
+3. Get your API key
+4. Add it to `.env.local` as `RESEND_API_KEY`
+5. Update the `from` field in `app/api/contact/route.ts` with your verified domain
+
+## Deployment
+
+### Vercel (Recommended)
+
+1. Push your code to GitHub
+2. Import the project in Vercel
+3. Add environment variables in Vercel dashboard
+4. Deploy
+
+### Other Platforms
+
+This is a standard Next.js 14 app and can be deployed to any platform that supports Node.js.
+
+## Customization
+
+### Update Content
+
+Edit the data files in `/data`:
+- `courses.ts` - Student course information
+- `services.ts` - Business service offerings
+- `site-config.ts` - Navigation, contact info, social links
+- `case-studies.ts` - Client success stories
+- `testimonials.ts` - Client testimonials
+
+### Update Colors
+
+Edit `app/globals.css` to change the color scheme:
+```css
+:root {
+  --charcoal: 26 26 26;
+  --ai-blue: 35 116 242;
+  --energy-orange: 247 165 54;
+  --soft-gray: 245 245 247;
+}
+```
+
+### Update Metadata
+
+Edit page-specific metadata in each page's `metadata` export or the root layout.
+
+## Performance
+
+- Server-side rendering with Next.js
+- Image optimization with next/image
+- Code splitting and lazy loading
+- Optimized animations with Framer Motion
+- Minimal JavaScript bundle size
+
+## Browser Support
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## License
+
+© 2025 A-dama AI Labs. All rights reserved.
+
+## Support
+
+For questions or support, contact hello@adamaailabs.com
