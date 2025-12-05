@@ -24,10 +24,10 @@ export const footerLinks = {
     { label: "Enrollment", href: "/contact?type=student" },
   ],
   services: [
-    { label: "AI Agents", href: "/build-with-ai#services" },
-    { label: "Python Automation", href: "/build-with-ai#services" },
-    { label: "ML Solutions", href: "/build-with-ai#services" },
-    { label: "Consulting", href: "/build-with-ai#services" },
+    { label: "AI Agents", href: "/build-with-ai#ai-agents" },
+    { label: "Python Automation", href: "/build-with-ai#python-automation" },
+    { label: "ML Solutions", href: "/build-with-ai#ml-solutions" },
+    { label: "Consulting", href: "/build-with-ai#consulting" },
   ],
   company: [
     { label: "About Us", href: "/about" },
