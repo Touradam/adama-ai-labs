@@ -7,7 +7,7 @@ interface AnimatedTextProps {
   children: ReactNode;
   className?: string;
   delay?: number;
-  as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "span";
+  as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "span" | "div";
 }
 
 export function AnimatedText({
