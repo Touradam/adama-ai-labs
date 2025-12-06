@@ -12,15 +12,15 @@ export function NetworkDiagram({ inputNodes, hiddenLayers, outputNodes }: Networ
   const allLayers = [inputNodes, ...hiddenLayers, outputNodes];
   
   // Limit nodes displayed per layer for compact view
-  const maxDisplayNodes = 5;
+  const maxDisplayNodes = 6;
   const displayLayers = allLayers.map(count => Math.min(count, maxDisplayNodes));
   const maxLayerSize = Math.max(...displayLayers);
   
-  const nodeRadius = 6;
-  const layerSpacing = 70;
-  const nodeSpacing = 22;
-  const networkHeight = maxLayerSize * nodeSpacing + 40;
-  const networkWidth = allLayers.length * layerSpacing;
+  const nodeRadius = 8;
+  const layerSpacing = 100;
+  const nodeSpacing = 32;
+  const networkHeight = maxLayerSize * nodeSpacing + 80;
+  const networkWidth = allLayers.length * layerSpacing + 80;
 
   return (
     <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl border-2 border-gray-200 p-6 shadow-lg">
@@ -69,12 +69,12 @@ export function NetworkDiagram({ inputNodes, hiddenLayers, outputNodes }: Networ
             {allLayers.map((layerSize, layerIndex) => {
               const displaySize = displayLayers[layerIndex];
               const hasMore = layerSize > maxDisplayNodes;
-              const x = layerIndex * layerSpacing + 30;
+              const x = layerIndex * layerSpacing + 50;
               
               // Center nodes vertically based on max layer size
               const layerHeight = displaySize * nodeSpacing;
               const maxHeight = maxLayerSize * nodeSpacing;
-              const startY = 30 + (maxHeight - layerHeight) / 2;
+              const startY = 50 + (maxHeight - layerHeight) / 2;
 
               return (
                 <g key={layerIndex}>
@@ -95,8 +95,8 @@ export function NetworkDiagram({ inputNodes, hiddenLayers, outputNodes }: Networ
                               x2={x + layerSpacing - nodeRadius}
                               y2={y2}
                               stroke="#d1d5db"
-                              strokeWidth="1.5"
-                              opacity="0.5"
+                              strokeWidth="2"
+                              opacity="0.4"
                             />
                           );
                         });
@@ -120,8 +120,8 @@ export function NetworkDiagram({ inputNodes, hiddenLayers, outputNodes }: Networ
                           r={nodeRadius}
                           fill={color}
                           stroke="white"
-                          strokeWidth="2"
-                          className="drop-shadow"
+                          strokeWidth="2.5"
+                          className="drop-shadow-md"
                         />
                       </g>
                     );
@@ -144,11 +144,11 @@ export function NetworkDiagram({ inputNodes, hiddenLayers, outputNodes }: Networ
                   {/* Layer label */}
                   <text
                     x={x}
-                    y={15}
+                    y={25}
                     textAnchor="middle"
-                    fontSize="10"
+                    fontSize="12"
                     fill="#374151"
-                    fontWeight="600"
+                    fontWeight="700"
                   >
                     {layerIndex === 0 ? 'Input' : 
                      layerIndex === allLayers.length - 1 ? 'Output' : 
@@ -158,11 +158,11 @@ export function NetworkDiagram({ inputNodes, hiddenLayers, outputNodes }: Networ
                   {/* Node count */}
                   <text
                     x={x}
-                    y={networkHeight + 45}
+                    y={networkHeight - 15}
                     textAnchor="middle"
-                    fontSize="9"
+                    fontSize="11"
                     fill="#6b7280"
-                    fontWeight="500"
+                    fontWeight="600"
                   >
                     {layerSize}
                   </text>
