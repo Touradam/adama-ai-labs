@@ -20,6 +20,11 @@ export default function NeuralNetworkBuilderPage() {
   const [model, setModel] = useState<tf.Sequential | null>(null);
   const [trainingProgress, setTrainingProgress] = useState<number>(0);
   const [selectedPreset, setSelectedPreset] = useState("1");
+  const [trainingData, setTrainingData] = useState<Array<{
+    epoch: number;
+    loss: number;
+    accuracy: number;
+  }>>([]);
 
   // Sample data generation
   const generateSampleData = useCallback(() => {
@@ -57,6 +62,7 @@ export default function NeuralNetworkBuilderPage() {
     try {
       setIsTraining(true);
       setTrainingProgress(0);
+      setTrainingData([]);
       
       toast.info('Generating sample data...');
       const { features, labels } = generateSampleData();
@@ -76,6 +82,15 @@ export default function NeuralNetworkBuilderPage() {
         async (epoch, logs) => {
           const progress = ((epoch + 1) / config.epochs) * 100;
           setTrainingProgress(progress);
+          
+          // Store training metrics
+          const metric = {
+            epoch: epoch + 1,
+            loss: logs.loss as number,
+            accuracy: logs.acc as number,
+          };
+          setTrainingData(prev => [...prev, metric]);
+          
           await tf.nextFrame();
         }
       );
@@ -153,6 +168,17 @@ export default function NeuralNetworkBuilderPage() {
           inputNodes={config.inputLayers}
           hiddenLayers={config.hiddenLayers}
           outputNodes={config.outputLayers}
+          activation={config.hiddenActivation}
+          outputActivation={config.outputActivation}
+          trainingStats={
+            trainingData.length > 0
+              ? {
+                  loss: trainingData[trainingData.length - 1].loss,
+                  accuracy: trainingData[trainingData.length - 1].accuracy,
+                  epoch: trainingData[trainingData.length - 1].epoch,
+                }
+              : undefined
+          }
         />
 
         <div className="grid lg:grid-cols-3 gap-6">

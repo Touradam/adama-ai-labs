@@ -1,15 +1,45 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
+import { NeuronDetails } from './NeuronDetails';
 
 interface NetworkDiagramProps {
   inputNodes: number;
   hiddenLayers: number[];
   outputNodes: number;
+  activation?: string;
+  outputActivation?: string;
+  trainingStats?: {
+    loss: number;
+    accuracy: number;
+    epoch: number;
+  };
 }
 
-export function NetworkDiagram({ inputNodes, hiddenLayers, outputNodes }: NetworkDiagramProps) {
+export function NetworkDiagram({ 
+  inputNodes, 
+  hiddenLayers, 
+  outputNodes,
+  activation = 'relu',
+  outputActivation = 'softmax',
+  trainingStats
+}: NetworkDiagramProps) {
+  const [selectedNeuron, setSelectedNeuron] = useState<{
+    layerIndex: number;
+    nodeIndex: number;
+    layerType: 'input' | 'hidden' | 'output';
+  } | null>(null);
+
   const allLayers = [inputNodes, ...hiddenLayers, outputNodes];
+  
+  // Generate sample weights and bias for demonstration
+  const generateSampleWeights = (count: number) => {
+    return Array.from({ length: count }, () => (Math.random() - 0.5) * 2);
+  };
+  
+  const generateSampleBias = () => {
+    return (Math.random() - 0.5) * 0.5;
+  };
   
   // Limit nodes displayed per layer for compact view
   const maxDisplayNodes = 6;
@@ -115,9 +145,18 @@ export function NetworkDiagram({ inputNodes, hiddenLayers, outputNodes }: Networ
                       layerIndex === 0 ? '#10b981' : 
                       layerIndex === allLayers.length - 1 ? '#f59e0b' : 
                       '#6366f1';
+                    
+                    const layerType: 'input' | 'hidden' | 'output' = 
+                      layerIndex === 0 ? 'input' : 
+                      layerIndex === allLayers.length - 1 ? 'output' : 
+                      'hidden';
 
                     return (
-                      <g key={nodeIndex}>
+                      <g 
+                        key={nodeIndex}
+                        onClick={() => setSelectedNeuron({ layerIndex, nodeIndex, layerType })}
+                        className="cursor-pointer"
+                      >
                         <circle
                           cx={x}
                           cy={y}
@@ -125,7 +164,18 @@ export function NetworkDiagram({ inputNodes, hiddenLayers, outputNodes }: Networ
                           fill={color}
                           stroke="white"
                           strokeWidth="2.5"
-                          className="drop-shadow-md"
+                          className="drop-shadow-md hover:opacity-80 transition-opacity"
+                        />
+                        {/* Hover indicator */}
+                        <circle
+                          cx={x}
+                          cy={y}
+                          r={nodeRadius + 3}
+                          fill="none"
+                          stroke={color}
+                          strokeWidth="1.5"
+                          opacity="0"
+                          className="hover:opacity-50 transition-opacity"
                         />
                       </g>
                     );
@@ -250,7 +300,36 @@ export function NetworkDiagram({ inputNodes, hiddenLayers, outputNodes }: Networ
         <span className="text-xs text-muted-foreground font-medium">
           {allLayers.length} Layers • {allLayers.reduce((a, b) => a + b, 0)} Total Nodes
         </span>
+        <span className="text-xs text-blue-600 ml-3">💡 Click any neuron to explore its details</span>
       </div>
+
+      {/* Neuron Details Modal */}
+      {selectedNeuron && (
+        <NeuronDetails
+          layerIndex={selectedNeuron.layerIndex}
+          nodeIndex={selectedNeuron.nodeIndex}
+          layerType={selectedNeuron.layerType}
+          activation={
+            selectedNeuron.layerType === 'output' 
+              ? outputActivation 
+              : selectedNeuron.layerType === 'hidden' 
+              ? activation 
+              : 'linear'
+          }
+          weights={
+            selectedNeuron.layerType !== 'input' 
+              ? generateSampleWeights(
+                  selectedNeuron.layerIndex === 0 
+                    ? inputNodes 
+                    : allLayers[selectedNeuron.layerIndex - 1]
+                )
+              : undefined
+          }
+          bias={selectedNeuron.layerType !== 'input' ? generateSampleBias() : undefined}
+          trainingStats={trainingStats}
+          onClose={() => setSelectedNeuron(null)}
+        />
+      )}
     </div>
   );
 }
