@@ -40,8 +40,8 @@ export default function NeuralNetworkBuilderPage() {
   const [bestAccuracy, setBestAccuracy] = useState(0);
   const [totalEpochs, setTotalEpochs] = useState(0);
 
-  // Check if user has seen tutorial before
-  useCallback(() => {
+  // Check if user has seen tutorial before and load stats
+  React.useEffect(() => {
     const hasSeenTutorial = localStorage.getItem('nn-builder-tutorial-seen');
     if (!hasSeenTutorial) {
       setShowTutorial(true);
