@@ -1,9 +1,115 @@
 "use client";
 
-import React from 'react';
-import { Metadata } from "next";
+import React, { useState, useCallback } from 'react';
+import Link from 'next/link';
+import * as tf from '@tensorflow/tfjs';
+import { NetworkDiagram } from '@/components/nn-builder/NetworkDiagram';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { NetworkConfig } from '@/lib/types';
+import { BUILT_IN_PRESETS } from '@/lib/presets';
+import { createModel, trainModel } from '@/lib/ml-utils';
+import { toast } from 'sonner';
 
 export default function NeuralNetworkBuilderPage() {
+  const [config, setConfig] = useState<NetworkConfig>(BUILT_IN_PRESETS[1].config);
+  const [isTraining, setIsTraining] = useState(false);
+  const [model, setModel] = useState<tf.Sequential | null>(null);
+  const [trainingProgress, setTrainingProgress] = useState<number>(0);
+  const [selectedPreset, setSelectedPreset] = useState("1");
+
+  // Sample data generation
+  const generateSampleData = useCallback(() => {
+    const numSamples = 100;
+    const features: number[][] = [];
+    const labels: number[][] = [];
+
+    for (let i = 0; i < numSamples; i++) {
+      const x = Math.random() * 10 - 5;
+      const y = Math.random() * 10 - 5;
+      features.push([x, y]);
+
+      // Simple classification: 3 regions
+      if (x > 0 && y > 0) {
+        labels.push([1, 0, 0]); // Class 0
+      } else if (x < 0 && y > 0) {
+        labels.push([0, 1, 0]); // Class 1
+      } else {
+        labels.push([0, 0, 1]); // Class 2
+      }
+    }
+
+    return { features, labels };
+  }, []);
+
+  const handleLoadPreset = useCallback((presetIndex: string) => {
+    const index = parseInt(presetIndex);
+    const preset = BUILT_IN_PRESETS[index];
+    setConfig(preset.config);
+    setSelectedPreset(presetIndex);
+    toast.success(`Loaded preset: ${preset.name}`);
+  }, []);
+
+  const handleTrain = useCallback(async () => {
+    try {
+      setIsTraining(true);
+      setTrainingProgress(0);
+      
+      toast.info('Generating sample data...');
+      const { features, labels } = generateSampleData();
+
+      toast.info('Creating model...');
+      const newModel = createModel(config, 2, 3);
+      setModel(newModel);
+
+      toast.info('Training started...');
+      await trainModel(
+        newModel,
+        features.slice(0, 60),
+        labels.slice(0, 60),
+        features.slice(60, 80),
+        labels.slice(60, 80),
+        config,
+        async (epoch, logs) => {
+          const progress = ((epoch + 1) / config.epochs) * 100;
+          setTrainingProgress(progress);
+          await tf.nextFrame();
+        }
+      );
+
+      setIsTraining(false);
+      setTrainingProgress(100);
+      toast.success('Training complete!');
+    } catch (error) {
+      console.error('Training error:', error);
+      toast.error('Training failed');
+      setIsTraining(false);
+    }
+  }, [config, generateSampleData]);
+
+  const handlePredict = useCallback(async () => {
+    if (!model) {
+      toast.error('Please train a model first');
+      return;
+    }
+
+    const x = Math.random() * 10 - 5;
+    const y = Math.random() * 10 - 5;
+    
+    const input = tf.tensor2d([[x, y]]);
+    const prediction = model.predict(input) as tf.Tensor;
+    const probs = await prediction.data();
+    const predictedClass = Array.from(probs).indexOf(Math.max(...Array.from(probs)));
+
+    input.dispose();
+    prediction.dispose();
+
+    toast.success(`Input: [${x.toFixed(2)}, ${y.toFixed(2)}] → Class ${predictedClass} (${(probs[predictedClass] * 100).toFixed(1)}% confidence)`);
+  }, [model]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-emerald-50/30 to-teal-50/30">
       {/* Header */}
@@ -13,38 +119,27 @@ export default function NeuralNetworkBuilderPage() {
             <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
               Neural Network Builder
             </h1>
-            <a
+            <Link
               href="/"
               className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 shadow-md hover:shadow-lg transition-all"
             >
               ← Back to Home
-            </a>
+            </Link>
           </div>
         </div>
       </header>
 
-      {/* Development Notice */}
-      <div className="border-b border-amber-200 bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50">
+      {/* Info Banner */}
+      <div className="border-b border-blue-200 bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-4">
-            <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
+            <div className="text-3xl">🧠</div>
             <div>
-              <p className="font-semibold text-amber-900 mb-1">
-                🚧 Under Development
+              <p className="font-semibold text-blue-900 mb-1">
+                Interactive Learning Tool
               </p>
-              <p className="text-sm text-amber-800">
-                This Neural Network Builder is currently under active development. The full interactive version from{' '}
-                <a 
-                  href="https://touradam.github.io/SEPT-LLC/builder" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="underline font-medium hover:text-amber-900"
-                >
-                  https://touradam.github.io/SEPT-LLC/builder
-                </a>
-                {' '}will be integrated here soon.
+              <p className="text-sm text-blue-800">
+                Build and train neural networks right in your browser. Experiment with different architectures and see how they learn!
               </p>
             </div>
           </div>
@@ -52,95 +147,180 @@ export default function NeuralNetworkBuilderPage() {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="max-w-4xl mx-auto text-center space-y-8">
-          <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-charcoal mb-4">
-              Interactive Neural Network Learning Platform
-            </h2>
-            <p className="text-lg text-muted-foreground">
-              Build, train, and test your own neural networks in the browser using TensorFlow.js
-            </p>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+        {/* Network Diagram */}
+        <NetworkDiagram
+          inputNodes={config.inputLayers}
+          hiddenLayers={config.hiddenLayers}
+          outputNodes={config.outputLayers}
+        />
+
+        <div className="grid lg:grid-cols-3 gap-6">
+          {/* Configuration */}
+          <div className="lg:col-span-1 space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Configuration</CardTitle>
+                <CardDescription>Choose a preset to get started</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Preset</Label>
+                  <Select value={selectedPreset} onValueChange={handleLoadPreset}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {BUILT_IN_PRESETS.map((preset, index) => (
+                        <SelectItem key={index} value={index.toString()}>
+                          {preset.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="pt-4 space-y-2 border-t">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Input Features:</span>
+                    <span className="font-medium">{config.inputLayers}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Hidden Layers:</span>
+                    <span className="font-medium">{config.hiddenLayers.join(', ')}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Output Classes:</span>
+                    <span className="font-medium">{config.outputLayers}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Epochs:</span>
+                    <span className="font-medium">{config.epochs}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Learning Rate:</span>
+                    <span className="font-medium">{config.learningRate}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Functions</CardTitle>
+                <CardDescription>Model configuration</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Activation:</span>
+                  <span className="font-medium capitalize">{config.hiddenActivation}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Output:</span>
+                  <span className="font-medium capitalize">{config.outputActivation}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Loss:</span>
+                  <span className="font-medium">{config.lossFunction}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Optimizer:</span>
+                  <span className="font-medium uppercase">{config.optimizer}</span>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
-          {/* Features */}
-          <div className="grid md:grid-cols-2 gap-6 mt-12">
-            <div className="p-6 bg-white rounded-lg shadow-sm border">
-              <h3 className="font-semibold text-lg mb-2">🧠 Visual Network Builder</h3>
-              <p className="text-sm text-muted-foreground">
-                Design your network architecture with an intuitive visual interface
-              </p>
-            </div>
-            <div className="p-6 bg-white rounded-lg shadow-sm border">
-              <h3 className="font-semibold text-lg mb-2">📊 Real-time Training</h3>
-              <p className="text-sm text-muted-foreground">
-                Watch your model learn with live metrics and visualizations
-              </p>
-            </div>
-            <div className="p-6 bg-white rounded-lg shadow-sm border">
-              <h3 className="font-semibold text-lg mb-2">🎯 Interactive Testing</h3>
-              <p className="text-sm text-muted-foreground">
-                Test predictions and see how your model performs
-              </p>
-            </div>
-            <div className="p-6 bg-white rounded-lg shadow-sm border">
-              <h3 className="font-semibold text-lg mb-2">📚 Learning Presets</h3>
-              <p className="text-sm text-muted-foreground">
-                Start with beginner-friendly templates and configurations
-              </p>
-            </div>
-          </div>
+          {/* Training & Testing */}
+          <div className="lg:col-span-2 space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Training</CardTitle>
+                <CardDescription>
+                  Train your model with sample data
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Button
+                  onClick={handleTrain}
+                  disabled={isTraining}
+                  className="w-full bg-emerald-600 hover:bg-emerald-700"
+                  size="lg"
+                >
+                  {isTraining ? 'Training...' : 'Start Training'}
+                </Button>
 
-          {/* CTA */}
-          <div className="mt-12 p-8 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-lg text-white">
-            <h3 className="text-2xl font-bold mb-4">Coming Soon!</h3>
-            <p className="mb-6">
-              We're integrating the full interactive neural network builder into this platform.
-              In the meantime, check out the working demo:
-            </p>
-            <a
-              href="https://touradam.github.io/SEPT-LLC/builder"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block px-8 py-3 bg-white text-emerald-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              Try the Demo →
-            </a>
-          </div>
+                {isTraining && (
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Progress:</span>
+                      <span className="font-medium">{trainingProgress.toFixed(0)}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        className="bg-emerald-600 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${trainingProgress}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
 
-          {/* Educational Content */}
-          <div className="mt-12 text-left space-y-6">
-            <h3 className="text-2xl font-bold text-charcoal">What You'll Learn</h3>
-            <ul className="space-y-4">
-              <li className="flex items-start gap-3">
-                <span className="text-emerald-600 text-xl">✓</span>
+                {!isTraining && trainingProgress === 100 && (
+                  <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+                    <p className="text-sm text-emerald-800 font-medium">
+                      ✓ Training complete! Model is ready for predictions.
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Testing & Prediction</CardTitle>
+                <CardDescription>
+                  Test your trained model
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Button
+                  onClick={handlePredict}
+                  disabled={!model || isTraining}
+                  variant="outline"
+                  className="w-full"
+                  size="lg"
+                >
+                  Run Random Prediction
+                </Button>
+
+                {!model && (
+                  <p className="text-sm text-muted-foreground text-center">
+                    Train a model first to enable predictions
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Educational Info */}
+            <Card>
+              <CardHeader>
+                <CardTitle>How It Works</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm">
                 <div>
-                  <strong>Neural Network Architecture:</strong> Understand layers, neurons, and connections
+                  <strong>1. Sample Data:</strong> We generate 100 samples with 2 features (x, y coordinates) classified into 3 regions.
                 </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-emerald-600 text-xl">✓</span>
                 <div>
-                  <strong>Activation Functions:</strong> Learn when to use ReLU, Sigmoid, Softmax, and more
+                  <strong>2. Training:</strong> The network learns patterns by adjusting weights through backpropagation.
                 </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-emerald-600 text-xl">✓</span>
                 <div>
-                  <strong>Training Process:</strong> See backpropagation and gradient descent in action
+                  <strong>3. Prediction:</strong> Once trained, the model can classify new inputs into one of the 3 classes.
                 </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-emerald-600 text-xl">✓</span>
-                <div>
-                  <strong>Model Evaluation:</strong> Understand loss, accuracy, and performance metrics
-                </div>
-              </li>
-            </ul>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
     </div>
   );
 }
-
