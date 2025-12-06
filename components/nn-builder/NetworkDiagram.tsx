@@ -174,17 +174,6 @@ export function NetworkDiagram({
                         onClick={() => setSelectedNeuron({ layerIndex, nodeIndex, layerType })}
                         className="cursor-pointer group"
                       >
-                        {/* Pulsing ring animation */}
-                        <circle
-                          cx={x}
-                          cy={y}
-                          r={nodeRadius + 5}
-                          fill="none"
-                          stroke={color}
-                          strokeWidth="2"
-                          opacity="0.3"
-                          className="animate-ping-slow"
-                        />
                         {/* Main neuron circle */}
                         <circle
                           cx={x}
@@ -193,10 +182,7 @@ export function NetworkDiagram({
                           fill={color}
                           stroke="white"
                           strokeWidth="2.5"
-                          className="drop-shadow-md group-hover:scale-110 transition-all duration-200 group-hover:brightness-110"
-                          style={{
-                            transformOrigin: `${x}px ${y}px`,
-                          }}
+                          className="drop-shadow-md transition-all duration-200"
                         />
                         {/* Hover indicator ring */}
                         <circle
@@ -209,10 +195,6 @@ export function NetworkDiagram({
                           opacity="0"
                           className="group-hover:opacity-60 transition-opacity duration-200"
                         />
-                        {/* Tooltip indicator on hover */}
-                        <title>
-                          Click to explore {layerType} neuron #{nodeIndex + 1}
-                        </title>
                       </g>
                     );
                   })}
@@ -269,7 +251,6 @@ export function NetworkDiagram({
             className="group px-3 py-2 bg-gradient-to-r from-green-100 to-emerald-100 rounded-lg border-2 border-green-400 shadow-sm hover:shadow-lg transition-all hover:scale-105 cursor-pointer relative"
             title="Click to change output activation function"
           >
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse group-hover:scale-125 transition-transform"></div>
             <p className="text-xs font-bold text-green-700">Activation</p>
             <p className="text-xs font-bold text-green-700">Function</p>
             <p className="text-xs text-green-600 uppercase mt-1">{outputActivation}</p>
@@ -309,7 +290,6 @@ export function NetworkDiagram({
           className="group relative px-3 py-2 bg-gradient-to-r from-red-100 to-pink-100 rounded-lg border-2 border-red-400 shadow-sm hover:shadow-lg transition-all hover:scale-105 cursor-pointer"
           title="Click to change optimizer"
         >
-          <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse group-hover:scale-125 transition-transform"></div>
           <p className="text-xs font-bold text-red-700 text-center">Optimizer</p>
           <p className="text-xs text-red-600 uppercase">{optimizer}</p>
         </button>
@@ -330,7 +310,6 @@ export function NetworkDiagram({
           className="group relative px-3 py-2 bg-gradient-to-r from-yellow-100 to-amber-100 rounded-lg border-2 border-yellow-400 shadow-sm hover:shadow-lg transition-all hover:scale-105 cursor-pointer"
           title="Click to change loss function"
         >
-          <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-500 rounded-full animate-pulse group-hover:scale-125 transition-transform"></div>
           <p className="text-xs font-bold text-yellow-700 text-center">Loss Function</p>
           <p className="text-xs text-yellow-600 text-center capitalize">{lossFunction}</p>
         </button>
@@ -352,12 +331,12 @@ export function NetworkDiagram({
         </div>
       </div>
 
-      {/* Stats */}
+        {/* Stats */}
       <div className="mt-3 text-center space-y-1">
         <span className="block md:inline text-xs text-muted-foreground font-medium">
           {allLayers.length} Layers • {allLayers.reduce((a, b) => a + b, 0)} Total Nodes
         </span>
-        <span className="block md:inline text-xs text-blue-600 md:ml-3 animate-pulse">
+        <span className="block md:inline text-xs text-blue-600 md:ml-3">
           💡 Click any neuron to explore its details
         </span>
       </div>
