@@ -206,26 +206,26 @@ export function NetworkDiagram({ inputNodes, hiddenLayers, outputNodes }: Networ
 
       {/* Bottom Process Boxes */}
       <div className="mt-8 flex items-center justify-center gap-3">
-        <div className="px-3 py-2 bg-gradient-to-r from-yellow-100 to-amber-100 rounded-lg border-2 border-yellow-400 shadow-sm">
-          <p className="text-xs font-bold text-yellow-700 text-center">Loss Function</p>
-        </div>
-        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-        </svg>
         <div className="px-3 py-2 bg-gray-100 rounded-lg border border-gray-300 shadow-sm">
-          <p className="text-xs font-semibold text-gray-700 text-center">Loss Score</p>
+          <p className="text-xs font-semibold text-gray-700 text-center">Weight & Bias</p>
         </div>
         <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
         </svg>
         <div className="px-3 py-2 bg-gradient-to-r from-red-100 to-pink-100 rounded-lg border-2 border-red-400 shadow-sm">
           <p className="text-xs font-bold text-red-700 text-center">Optimizer</p>
         </div>
         <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
         </svg>
         <div className="px-3 py-2 bg-gray-100 rounded-lg border border-gray-300 shadow-sm">
-          <p className="text-xs font-semibold text-gray-700 text-center">Weight & Bias</p>
+          <p className="text-xs font-semibold text-gray-700 text-center">Loss Score</p>
+        </div>
+        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
+        </svg>
+        <div className="px-3 py-2 bg-gradient-to-r from-yellow-100 to-amber-100 rounded-lg border-2 border-yellow-400 shadow-sm">
+          <p className="text-xs font-bold text-yellow-700 text-center">Loss Function</p>
         </div>
       </div>
 
