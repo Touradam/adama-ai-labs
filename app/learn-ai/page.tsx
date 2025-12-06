@@ -44,8 +44,8 @@ export default function LearnAIPage() {
                     Neural Network Builder
                   </h2>
                   <p className="text-lg text-muted-foreground mb-6">
-                    Learn by doing! Build, train, and test your own neural networks right in your browser. 
-                    Experiment with different architectures, activation functions, and watch your model learn in real-time.
+                    Learn by doing! Build, train, and test your own neural networks right here on A-dama AI Labs. 
+                    Experiment with different architectures, activation functions, and watch your model learn in real-time - all in your browser!
                   </p>
                   <div className="space-y-3 mb-6">
                     <div className="flex items-center gap-2">
