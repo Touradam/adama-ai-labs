@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from 'react';
+import * as tf from '@tensorflow/tfjs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { RefreshCw, Upload } from 'lucide-react';
@@ -14,6 +15,7 @@ interface DataPoint {
 interface DataVisualizationProps {
   data: DataPoint[];
   predictions?: Array<{ x: number; y: number; predictedClass: number }>;
+  model?: any;
   onDataGenerate?: () => void;
   onPointClick?: (x: number, y: number) => void;
 }
@@ -23,10 +25,12 @@ const CLASS_COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
 export function DataVisualization({
   data,
   predictions,
+  model,
   onDataGenerate,
   onPointClick,
 }: DataVisualizationProps) {
   const [hoveredPoint, setHoveredPoint] = useState<number | null>(null);
+  const [showDecisionBoundary, setShowDecisionBoundary] = useState(true);
 
   const plotDimensions = {
     width: 400,
@@ -109,10 +113,42 @@ export function DataVisualization({
     return counts;
   }, [data]);
 
+  // Generate decision boundary background
+  const decisionBoundaryGrid = useMemo(() => {
+    if (!model || !showDecisionBoundary) return [];
+
+    const gridSize = 30; // 30x30 grid for smoother visualization
+    const grid: Array<{ x: number; y: number; class: number }> = [];
+
+    for (let i = 0; i <= gridSize; i++) {
+      for (let j = 0; j <= gridSize; j++) {
+        const x = scales.xMin + (i / gridSize) * (scales.xMax - scales.xMin);
+        const y = scales.yMin + (j / gridSize) * (scales.yMax - scales.yMin);
+        
+        try {
+          // Predict class for this point
+          const input = tf.tensor2d([[x, y]]);
+          const prediction = model.predict(input) as tf.Tensor;
+          const probs = prediction.dataSync();
+          const predictedClass = Array.from(probs).indexOf(Math.max(...Array.from(probs)));
+          
+          input.dispose();
+          prediction.dispose();
+          
+          grid.push({ x, y, class: predictedClass });
+        } catch (error) {
+          // Skip if prediction fails
+        }
+      }
+    }
+
+    return grid;
+  }, [model, scales, showDecisionBoundary]);
+
   return (
     <Card className="w-full">
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-2">
           <div>
             <CardTitle className="text-lg">Data Visualization</CardTitle>
             <CardDescription>
@@ -121,17 +157,29 @@ export function DataVisualization({
                 : 'No data yet - generate sample data to begin'}
             </CardDescription>
           </div>
-          {onDataGenerate && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onDataGenerate}
-              className="gap-2"
-            >
-              <RefreshCw className="w-4 h-4" />
-              <span className="hidden sm:inline">Generate</span>
-            </Button>
-          )}
+          <div className="flex items-center gap-2">
+            {model && data.length > 0 && (
+              <Button
+                variant={showDecisionBoundary ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setShowDecisionBoundary(!showDecisionBoundary)}
+                className="gap-2"
+              >
+                {showDecisionBoundary ? '👁️ Hide' : '👁️ Show'} Boundaries
+              </Button>
+            )}
+            {onDataGenerate && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onDataGenerate}
+                className="gap-2"
+              >
+                <RefreshCw className="w-4 h-4" />
+                <span className="hidden sm:inline">Generate</span>
+              </Button>
+            )}
+          </div>
         </div>
       </CardHeader>
       <CardContent>
@@ -190,18 +238,22 @@ export function DataVisualization({
                 strokeWidth="2"
               />
 
-              {/* Decision boundary background (if predictions available) */}
-              {predictions && predictions.length > 0 && (
-                <g opacity="0.2">
-                  {predictions.map((pred, i) => (
-                    <circle
-                      key={`pred-${i}`}
-                      cx={scales.x(pred.x)}
-                      cy={scales.y(pred.y)}
-                      r="3"
-                      fill={CLASS_COLORS[pred.predictedClass % CLASS_COLORS.length]}
-                    />
-                  ))}
+              {/* Decision boundary background */}
+              {showDecisionBoundary && decisionBoundaryGrid.length > 0 && (
+                <g opacity="0.15">
+                  {decisionBoundaryGrid.map((point, i) => {
+                    const cellSize = plotArea.width / 30;
+                    return (
+                      <rect
+                        key={`boundary-${i}`}
+                        x={scales.x(point.x) - cellSize / 2}
+                        y={scales.y(point.y) - cellSize / 2}
+                        width={cellSize}
+                        height={cellSize}
+                        fill={CLASS_COLORS[point.class % CLASS_COLORS.length]}
+                      />
+                    );
+                  })}
                 </g>
               )}
 

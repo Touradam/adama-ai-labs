@@ -410,6 +410,7 @@ export default function NeuralNetworkBuilderPage() {
             {/* Data Visualization */}
             <DataVisualization
               data={dataPoints}
+              model={model}
               onDataGenerate={generateSampleData}
             />
 
