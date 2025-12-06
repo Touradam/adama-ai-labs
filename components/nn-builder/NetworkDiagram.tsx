@@ -14,11 +14,12 @@ export function NetworkDiagram({ inputNodes, hiddenLayers, outputNodes }: Networ
   // Limit nodes displayed per layer for compact view
   const maxDisplayNodes = 5;
   const displayLayers = allLayers.map(count => Math.min(count, maxDisplayNodes));
+  const maxLayerSize = Math.max(...displayLayers);
   
   const nodeRadius = 6;
   const layerSpacing = 70;
   const nodeSpacing = 22;
-  const networkHeight = maxDisplayNodes * nodeSpacing + 20;
+  const networkHeight = maxLayerSize * nodeSpacing + 40;
   const networkWidth = allLayers.length * layerSpacing;
 
   return (
@@ -69,7 +70,11 @@ export function NetworkDiagram({ inputNodes, hiddenLayers, outputNodes }: Networ
               const displaySize = displayLayers[layerIndex];
               const hasMore = layerSize > maxDisplayNodes;
               const x = layerIndex * layerSpacing + 30;
-              const startY = 30;
+              
+              // Center nodes vertically based on max layer size
+              const layerHeight = displaySize * nodeSpacing;
+              const maxHeight = maxLayerSize * nodeSpacing;
+              const startY = 30 + (maxHeight - layerHeight) / 2;
 
               return (
                 <g key={layerIndex}>
