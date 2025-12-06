@@ -42,6 +42,9 @@ export default function NeuralNetworkBuilderPage() {
 
   // Check if user has seen tutorial before and load stats
   React.useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') return;
+
     const hasSeenTutorial = localStorage.getItem('nn-builder-tutorial-seen');
     if (!hasSeenTutorial) {
       setShowTutorial(true);
@@ -50,10 +53,14 @@ export default function NeuralNetworkBuilderPage() {
     // Load gamification stats
     const stats = localStorage.getItem('nn-builder-stats');
     if (stats) {
-      const parsed = JSON.parse(stats);
-      setTrainingCount(parsed.trainingCount || 0);
-      setBestAccuracy(parsed.bestAccuracy || 0);
-      setTotalEpochs(parsed.totalEpochs || 0);
+      try {
+        const parsed = JSON.parse(stats);
+        setTrainingCount(parsed.trainingCount || 0);
+        setBestAccuracy(parsed.bestAccuracy || 0);
+        setTotalEpochs(parsed.totalEpochs || 0);
+      } catch (error) {
+        console.error('Error parsing stats:', error);
+      }
     }
   }, []);
 
@@ -147,11 +154,13 @@ export default function NeuralNetworkBuilderPage() {
       setBestAccuracy(newBestAccuracy);
       setTotalEpochs(newTotalEpochs);
 
-      localStorage.setItem('nn-builder-stats', JSON.stringify({
-        trainingCount: newTrainingCount,
-        bestAccuracy: newBestAccuracy,
-        totalEpochs: newTotalEpochs,
-      }));
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('nn-builder-stats', JSON.stringify({
+          trainingCount: newTrainingCount,
+          bestAccuracy: newBestAccuracy,
+          totalEpochs: newTotalEpochs,
+        }));
+      }
 
       toast.success('Training complete!');
     } catch (error) {
@@ -196,12 +205,16 @@ export default function NeuralNetworkBuilderPage() {
   }, [model]);
 
   const handleTutorialComplete = () => {
-    localStorage.setItem('nn-builder-tutorial-seen', 'true');
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('nn-builder-tutorial-seen', 'true');
+    }
     setShowTutorial(false);
   };
 
   const handleTutorialSkip = () => {
-    localStorage.setItem('nn-builder-tutorial-seen', 'true');
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('nn-builder-tutorial-seen', 'true');
+    }
     setShowTutorial(false);
   };
 

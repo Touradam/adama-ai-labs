@@ -89,13 +89,19 @@ export function GamificationPanel({
 
   // Initialize achievements from localStorage
   useEffect(() => {
-    const savedAchievements = localStorage.getItem('nn-builder-achievements');
-    if (savedAchievements) {
-      setAchievements(JSON.parse(savedAchievements));
-    } else {
-      const initial = ACHIEVEMENTS_LIST.map(a => ({ ...a, unlocked: false }));
-      setAchievements(initial);
-      localStorage.setItem('nn-builder-achievements', JSON.stringify(initial));
+    if (typeof window === 'undefined') return;
+
+    try {
+      const savedAchievements = localStorage.getItem('nn-builder-achievements');
+      if (savedAchievements) {
+        setAchievements(JSON.parse(savedAchievements));
+      } else {
+        const initial = ACHIEVEMENTS_LIST.map(a => ({ ...a, unlocked: false }));
+        setAchievements(initial);
+        localStorage.setItem('nn-builder-achievements', JSON.stringify(initial));
+      }
+    } catch (error) {
+      console.error('Error loading achievements:', error);
     }
   }, []);
 
@@ -143,7 +149,9 @@ export function GamificationPanel({
 
     if (updated) {
       setAchievements(newAchievements);
-      localStorage.setItem('nn-builder-achievements', JSON.stringify(newAchievements));
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('nn-builder-achievements', JSON.stringify(newAchievements));
+      }
     }
   }, [trainingCount, bestAccuracy, totalEpochs, achievements]);
 
