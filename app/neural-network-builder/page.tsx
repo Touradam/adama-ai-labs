@@ -7,6 +7,8 @@ import { NetworkDiagram } from '@/components/nn-builder/NetworkDiagram';
 import { TrainingChart } from '@/components/nn-builder/TrainingChart';
 import { DataVisualization } from '@/components/nn-builder/DataVisualization';
 import { OnboardingTutorial } from '@/components/nn-builder/OnboardingTutorial';
+import { InteractiveTesting } from '@/components/nn-builder/InteractiveTesting';
+import { GamificationPanel } from '@/components/nn-builder/GamificationPanel';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -34,12 +36,24 @@ export default function NeuralNetworkBuilderPage() {
     class: number;
   }>>([]);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [trainingCount, setTrainingCount] = useState(0);
+  const [bestAccuracy, setBestAccuracy] = useState(0);
+  const [totalEpochs, setTotalEpochs] = useState(0);
 
   // Check if user has seen tutorial before
   useCallback(() => {
     const hasSeenTutorial = localStorage.getItem('nn-builder-tutorial-seen');
     if (!hasSeenTutorial) {
       setShowTutorial(true);
+    }
+
+    // Load gamification stats
+    const stats = localStorage.getItem('nn-builder-stats');
+    if (stats) {
+      const parsed = JSON.parse(stats);
+      setTrainingCount(parsed.trainingCount || 0);
+      setBestAccuracy(parsed.bestAccuracy || 0);
+      setTotalEpochs(parsed.totalEpochs || 0);
     }
   }, []);
 
@@ -122,32 +136,63 @@ export default function NeuralNetworkBuilderPage() {
 
       setIsTraining(false);
       setTrainingProgress(100);
+      
+      // Update gamification stats
+      const finalAccuracy = trainingData[trainingData.length - 1]?.accuracy || 0;
+      const newTrainingCount = trainingCount + 1;
+      const newBestAccuracy = Math.max(bestAccuracy, finalAccuracy);
+      const newTotalEpochs = config.epochs;
+
+      setTrainingCount(newTrainingCount);
+      setBestAccuracy(newBestAccuracy);
+      setTotalEpochs(newTotalEpochs);
+
+      localStorage.setItem('nn-builder-stats', JSON.stringify({
+        trainingCount: newTrainingCount,
+        bestAccuracy: newBestAccuracy,
+        totalEpochs: newTotalEpochs,
+      }));
+
       toast.success('Training complete!');
     } catch (error) {
       console.error('Training error:', error);
       toast.error('Training failed');
       setIsTraining(false);
     }
-  }, [config, generateSampleData]);
+  }, [config, generateSampleData, trainingData, trainingCount, bestAccuracy]);
 
-  const handlePredict = useCallback(async () => {
+  const handlePredict = useCallback(async (inputValues?: number[]) => {
     if (!model) {
       toast.error('Please train a model first');
-      return;
+      return { predictedClass: 0, confidence: 0, probabilities: [] };
     }
 
-    const x = Math.random() * 10 - 5;
-    const y = Math.random() * 10 - 5;
+    let x, y;
+    if (inputValues && inputValues.length >= 2) {
+      [x, y] = inputValues;
+    } else {
+      x = Math.random() * 10 - 5;
+      y = Math.random() * 10 - 5;
+    }
     
     const input = tf.tensor2d([[x, y]]);
     const prediction = model.predict(input) as tf.Tensor;
     const probs = await prediction.data();
     const predictedClass = Array.from(probs).indexOf(Math.max(...Array.from(probs)));
+    const confidence = probs[predictedClass];
 
     input.dispose();
     prediction.dispose();
 
-    toast.success(`Input: [${x.toFixed(2)}, ${y.toFixed(2)}] → Class ${predictedClass} (${(probs[predictedClass] * 100).toFixed(1)}% confidence)`);
+    if (!inputValues) {
+      toast.success(`Input: [${x.toFixed(2)}, ${y.toFixed(2)}] → Class ${predictedClass} (${(confidence * 100).toFixed(1)}% confidence)`);
+    }
+
+    return {
+      predictedClass,
+      confidence,
+      probabilities: Array.from(probs),
+    };
   }, [model]);
 
   const handleTutorialComplete = () => {
@@ -414,29 +459,33 @@ export default function NeuralNetworkBuilderPage() {
             {/* Training Chart */}
             <TrainingChart data={trainingData} isTraining={isTraining} />
 
+            {/* Interactive Testing */}
+            <InteractiveTesting
+              model={model}
+              isTraining={isTraining}
+              inputSize={config.inputLayers}
+              outputSize={config.outputLayers}
+              onPredict={handlePredict}
+            />
+
+            {/* Quick Random Test */}
             <Card>
               <CardHeader>
-                <CardTitle>Testing & Prediction</CardTitle>
-                <CardDescription>
-                  Test your trained model
+                <CardTitle className="text-base">Quick Random Test</CardTitle>
+                <CardDescription className="text-xs">
+                  Generate and test random inputs instantly
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent>
                 <Button
-                  onClick={handlePredict}
+                  onClick={() => handlePredict()}
                   disabled={!model || isTraining}
                   variant="outline"
-                  className="w-full"
+                  className="w-full transition-all hover:scale-105"
                   size="lg"
                 >
-                  Run Random Prediction
+                  🎲 Run Random Prediction
                 </Button>
-
-                {!model && (
-                  <p className="text-sm text-muted-foreground text-center">
-                    Train a model first to enable predictions
-                  </p>
-                )}
               </CardContent>
             </Card>
 
@@ -458,6 +507,15 @@ export default function NeuralNetworkBuilderPage() {
               </CardContent>
             </Card>
           </div>
+        </div>
+
+        {/* Gamification Section */}
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+          <GamificationPanel
+            trainingCount={trainingCount}
+            bestAccuracy={bestAccuracy}
+            totalEpochs={totalEpochs}
+          />
         </div>
       </div>
     </div>
