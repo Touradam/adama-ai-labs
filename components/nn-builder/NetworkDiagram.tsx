@@ -12,6 +12,7 @@ interface NetworkDiagramProps {
   outputActivation?: string;
   lossFunction?: string;
   optimizer?: string;
+  model?: any;
   trainingStats?: {
     loss: number;
     accuracy: number;
@@ -31,6 +32,7 @@ export function NetworkDiagram({
   outputActivation = 'softmax',
   lossFunction = 'categoricalCrossentropy',
   optimizer = 'adam',
+  model,
   trainingStats,
   onActivationChange,
   onOutputActivationChange,
@@ -48,6 +50,84 @@ export function NetworkDiagram({
   } | null>(null);
 
   const allLayers = [inputNodes, ...hiddenLayers, outputNodes];
+  
+  // Calculate neuron contributions based on weight magnitudes
+  const neuronContributions = React.useMemo(() => {
+    if (!model) return null;
+
+    const contributions: number[][] = [];
+    
+    try {
+      const weights = model.getWeights();
+      let weightIndex = 0;
+
+      // Input layer - no incoming weights, use outgoing
+      const inputContrib = new Array(inputNodes).fill(0);
+      if (weights[weightIndex]) {
+        const inputWeights = weights[weightIndex].arraySync() as number[][];
+        for (let i = 0; i < inputNodes; i++) {
+          const sum = inputWeights[i]?.reduce((acc, w) => acc + Math.abs(w), 0) || 0;
+          inputContrib[i] = sum;
+        }
+      }
+      contributions.push(inputContrib);
+
+      // Hidden and output layers - use incoming weights
+      const layersToProcess = [...hiddenLayers, outputNodes];
+      weightIndex = 0;
+
+      for (let layerIdx = 0; layerIdx < layersToProcess.length; layerIdx++) {
+        const layerSize = layersToProcess[layerIdx];
+        const layerContrib = new Array(layerSize).fill(0);
+
+        if (weights[weightIndex]) {
+          const layerWeights = weights[weightIndex].arraySync() as number[][];
+          
+          // Sum absolute values of incoming weights for each neuron
+          for (let neuronIdx = 0; neuronIdx < layerSize && neuronIdx < layerWeights[0]?.length; neuronIdx++) {
+            const sum = layerWeights.reduce((acc, row) => acc + Math.abs(row[neuronIdx] || 0), 0);
+            layerContrib[neuronIdx] = sum;
+          }
+        }
+        
+        contributions.push(layerContrib);
+        weightIndex += 2; // Skip bias weights
+      }
+
+      // Normalize contributions to 0-1 range per layer
+      return contributions.map(layer => {
+        const max = Math.max(...layer, 0.001);
+        return layer.map(c => c / max);
+      });
+    } catch (error) {
+      console.error('Error calculating contributions:', error);
+      return null;
+    }
+  }, [model, inputNodes, hiddenLayers, outputNodes]);
+
+  // Get contribution-based color
+  const getContributionColor = (layerIndex: number, nodeIndex: number, baseColor: string) => {
+    if (!neuronContributions || !neuronContributions[layerIndex]) {
+      return baseColor;
+    }
+
+    const contribution = neuronContributions[layerIndex][nodeIndex] || 0;
+    
+    // Create gradient from pale to saturated based on contribution
+    const colorMap: { [key: string]: { low: string; high: string } } = {
+      '#10b981': { low: '#d1fae5', high: '#059669' }, // green (input)
+      '#6366f1': { low: '#e0e7ff', high: '#4f46e5' }, // indigo (hidden)
+      '#f59e0b': { low: '#fef3c7', high: '#d97706' }, // amber (output)
+    };
+
+    const colors = colorMap[baseColor];
+    if (!colors) return baseColor;
+
+    // Interpolate between low and high based on contribution
+    return contribution > 0.7 ? colors.high : 
+           contribution > 0.4 ? baseColor : 
+           colors.low;
+  };
   
   // Generate sample weights and bias for demonstration
   const generateSampleWeights = (count: number) => {
@@ -158,10 +238,13 @@ export function NetworkDiagram({
                   {/* Draw nodes */}
                   {Array.from({ length: displaySize }).map((_, nodeIndex) => {
                     const y = startY + nodeIndex * nodeSpacing;
-                    const color = 
+                    const baseColor = 
                       layerIndex === 0 ? '#10b981' : 
                       layerIndex === allLayers.length - 1 ? '#f59e0b' : 
                       '#6366f1';
+                    
+                    const color = getContributionColor(layerIndex, nodeIndex, baseColor);
+                    const contribution = neuronContributions?.[layerIndex]?.[nodeIndex] || 0;
                     
                     const layerType: 'input' | 'hidden' | 'output' = 
                       layerIndex === 0 ? 'input' : 
@@ -174,15 +257,24 @@ export function NetworkDiagram({
                         onClick={() => setSelectedNeuron({ layerIndex, nodeIndex, layerType })}
                         className="cursor-pointer group"
                       >
-                        {/* Main neuron circle */}
+                        {/* Main neuron circle with gradient fill */}
+                        <defs>
+                          <radialGradient id={`gradient-${layerIndex}-${nodeIndex}`}>
+                            <stop offset="0%" stopColor={color} stopOpacity="1" />
+                            <stop offset="100%" stopColor={color} stopOpacity="0.8" />
+                          </radialGradient>
+                        </defs>
                         <circle
                           cx={x}
                           cy={y}
                           r={nodeRadius}
-                          fill={color}
+                          fill={`url(#gradient-${layerIndex}-${nodeIndex})`}
                           stroke="white"
                           strokeWidth="2.5"
                           className="drop-shadow-md transition-all duration-200"
+                          style={{
+                            filter: model && contribution > 0.6 ? 'brightness(1.1)' : undefined,
+                          }}
                         />
                         {/* Hover indicator ring */}
                         <circle
@@ -190,11 +282,23 @@ export function NetworkDiagram({
                           cy={y}
                           r={nodeRadius + 4}
                           fill="none"
-                          stroke={color}
+                          stroke={baseColor}
                           strokeWidth="2"
                           opacity="0"
                           className="group-hover:opacity-60 transition-opacity duration-200"
                         />
+                        {/* High contribution indicator */}
+                        {model && contribution > 0.8 && (
+                          <circle
+                            cx={x}
+                            cy={y}
+                            r={nodeRadius - 2}
+                            fill="none"
+                            stroke="white"
+                            strokeWidth="1"
+                            opacity="0.5"
+                          />
+                        )}
                       </g>
                     );
                   })}
@@ -316,19 +420,40 @@ export function NetworkDiagram({
       </div>
 
       {/* Legend */}
-      <div className="mt-6 pt-4 border-t flex items-center justify-center gap-6 text-xs">
-        <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded-full bg-emerald-500 border-2 border-white shadow"></div>
-          <span className="text-muted-foreground font-medium">Input Layer</span>
+      <div className="mt-6 pt-4 border-t space-y-3">
+        <div className="flex items-center justify-center gap-6 text-xs">
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 rounded-full bg-emerald-500 border-2 border-white shadow"></div>
+            <span className="text-muted-foreground font-medium">Input Layer</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 rounded-full bg-indigo-500 border-2 border-white shadow"></div>
+            <span className="text-muted-foreground font-medium">Hidden Layers</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-3 h-3 rounded-full bg-amber-500 border-2 border-white shadow"></div>
+            <span className="text-muted-foreground font-medium">Output Layer</span>
+          </div>
         </div>
-        <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded-full bg-indigo-500 border-2 border-white shadow"></div>
-          <span className="text-muted-foreground font-medium">Hidden Layers</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded-full bg-amber-500 border-2 border-white shadow"></div>
-          <span className="text-muted-foreground font-medium">Output Layer</span>
-        </div>
+        
+        {/* Contribution gradient legend */}
+        {model && neuronContributions && (
+          <div className="flex items-center justify-center gap-2 text-xs">
+            <span className="text-muted-foreground font-medium">Contribution:</span>
+            <div className="flex items-center gap-1">
+              <div className="w-4 h-4 rounded-full bg-indigo-200 border border-white"></div>
+              <span className="text-muted-foreground">Low</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-4 h-4 rounded-full bg-indigo-500 border border-white"></div>
+              <span className="text-muted-foreground">Medium</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-4 h-4 rounded-full bg-indigo-700 border border-white shadow-md"></div>
+              <span className="text-muted-foreground">High</span>
+            </div>
+          </div>
+        )}
       </div>
 
         {/* Stats */}

@@ -285,6 +285,7 @@ export default function NeuralNetworkBuilderPage() {
             outputActivation={config.outputActivation}
             lossFunction={config.lossFunction}
             optimizer={config.optimizer}
+            model={model}
             trainingStats={
               trainingData.length > 0
                 ? {
