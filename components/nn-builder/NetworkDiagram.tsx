@@ -70,10 +70,10 @@ export function NetworkDiagram({
   const networkWidth = allLayers.length * layerSpacing + 80;
 
   return (
-    <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl border-2 border-gray-200 p-6 shadow-lg">
+    <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl border-2 border-gray-200 p-4 md:p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
       {/* Header */}
       <div className="mb-4 text-center">
-        <h3 className="text-lg font-bold text-charcoal mb-1">Neural Network Training Cycle</h3>
+        <h3 className="text-base md:text-lg font-bold text-charcoal mb-1">Neural Network Training Cycle</h3>
         <p className="text-xs text-muted-foreground font-mono">
           {inputNodes} → {hiddenLayers.join(' → ')} → {outputNodes}
         </p>
@@ -172,8 +172,20 @@ export function NetworkDiagram({
                       <g 
                         key={nodeIndex}
                         onClick={() => setSelectedNeuron({ layerIndex, nodeIndex, layerType })}
-                        className="cursor-pointer"
+                        className="cursor-pointer group"
                       >
+                        {/* Pulsing ring animation */}
+                        <circle
+                          cx={x}
+                          cy={y}
+                          r={nodeRadius + 5}
+                          fill="none"
+                          stroke={color}
+                          strokeWidth="2"
+                          opacity="0.3"
+                          className="animate-ping-slow"
+                        />
+                        {/* Main neuron circle */}
                         <circle
                           cx={x}
                           cy={y}
@@ -181,19 +193,26 @@ export function NetworkDiagram({
                           fill={color}
                           stroke="white"
                           strokeWidth="2.5"
-                          className="drop-shadow-md hover:opacity-80 transition-opacity"
+                          className="drop-shadow-md group-hover:scale-110 transition-all duration-200 group-hover:brightness-110"
+                          style={{
+                            transformOrigin: `${x}px ${y}px`,
+                          }}
                         />
-                        {/* Hover indicator */}
+                        {/* Hover indicator ring */}
                         <circle
                           cx={x}
                           cy={y}
-                          r={nodeRadius + 3}
+                          r={nodeRadius + 4}
                           fill="none"
                           stroke={color}
-                          strokeWidth="1.5"
+                          strokeWidth="2"
                           opacity="0"
-                          className="hover:opacity-50 transition-opacity"
+                          className="group-hover:opacity-60 transition-opacity duration-200"
                         />
+                        {/* Tooltip indicator on hover */}
+                        <title>
+                          Click to explore {layerType} neuron #{nodeIndex + 1}
+                        </title>
                       </g>
                     );
                   })}
@@ -244,11 +263,13 @@ export function NetworkDiagram({
         </div>
 
         {/* Processing Steps - Right Side */}
-        <div className="absolute -right-48 top-1/4 flex flex-col gap-2">
+        <div className="hidden xl:flex absolute -right-48 top-1/4 flex-col gap-2">
           <button
             onClick={() => setSelectorModal({ type: 'activationOutput' })}
-            className="px-3 py-2 bg-gradient-to-r from-green-100 to-emerald-100 rounded-lg border-2 border-green-400 shadow-sm hover:shadow-md transition-all hover:scale-105 cursor-pointer"
+            className="group px-3 py-2 bg-gradient-to-r from-green-100 to-emerald-100 rounded-lg border-2 border-green-400 shadow-sm hover:shadow-lg transition-all hover:scale-105 cursor-pointer relative"
+            title="Click to change output activation function"
           >
+            <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse group-hover:scale-125 transition-transform"></div>
             <p className="text-xs font-bold text-green-700">Activation</p>
             <p className="text-xs font-bold text-green-700">Function</p>
             <p className="text-xs text-green-600 uppercase mt-1">{outputActivation}</p>
@@ -276,36 +297,40 @@ export function NetworkDiagram({
       </div>
 
       {/* Bottom Process Boxes */}
-      <div className="mt-8 flex items-center justify-center gap-3">
-        <div className="px-3 py-2 bg-gray-100 rounded-lg border border-gray-300 shadow-sm">
+      <div className="mt-8 flex flex-wrap items-center justify-center gap-2 md:gap-3">
+        <div className="px-3 py-2 bg-gray-100 rounded-lg border border-gray-300 shadow-sm hover:shadow-md transition-shadow" title="Network parameters">
           <p className="text-xs font-semibold text-gray-700 text-center">Weight & Bias</p>
         </div>
-        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="hidden md:block w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
         </svg>
         <button
           onClick={() => setSelectorModal({ type: 'optimizer' })}
-          className="px-3 py-2 bg-gradient-to-r from-red-100 to-pink-100 rounded-lg border-2 border-red-400 shadow-sm hover:shadow-md transition-all hover:scale-105 cursor-pointer"
+          className="group relative px-3 py-2 bg-gradient-to-r from-red-100 to-pink-100 rounded-lg border-2 border-red-400 shadow-sm hover:shadow-lg transition-all hover:scale-105 cursor-pointer"
+          title="Click to change optimizer"
         >
+          <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse group-hover:scale-125 transition-transform"></div>
           <p className="text-xs font-bold text-red-700 text-center">Optimizer</p>
           <p className="text-xs text-red-600 uppercase">{optimizer}</p>
         </button>
-        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="hidden md:block w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
         </svg>
-        <div className="px-3 py-2 bg-gray-100 rounded-lg border border-gray-300 shadow-sm">
+        <div className="px-3 py-2 bg-gray-100 rounded-lg border border-gray-300 shadow-sm hover:shadow-md transition-shadow" title="Current training loss">
           <p className="text-xs font-semibold text-gray-700 text-center">Loss Score</p>
           {trainingStats && (
             <p className="text-xs text-gray-600 font-mono">{trainingStats.loss.toFixed(4)}</p>
           )}
         </div>
-        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="hidden md:block w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
         </svg>
         <button
           onClick={() => setSelectorModal({ type: 'loss' })}
-          className="px-3 py-2 bg-gradient-to-r from-yellow-100 to-amber-100 rounded-lg border-2 border-yellow-400 shadow-sm hover:shadow-md transition-all hover:scale-105 cursor-pointer"
+          className="group relative px-3 py-2 bg-gradient-to-r from-yellow-100 to-amber-100 rounded-lg border-2 border-yellow-400 shadow-sm hover:shadow-lg transition-all hover:scale-105 cursor-pointer"
+          title="Click to change loss function"
         >
+          <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-500 rounded-full animate-pulse group-hover:scale-125 transition-transform"></div>
           <p className="text-xs font-bold text-yellow-700 text-center">Loss Function</p>
           <p className="text-xs text-yellow-600 text-center capitalize">{lossFunction}</p>
         </button>
@@ -328,11 +353,13 @@ export function NetworkDiagram({
       </div>
 
       {/* Stats */}
-      <div className="mt-3 text-center">
-        <span className="text-xs text-muted-foreground font-medium">
+      <div className="mt-3 text-center space-y-1">
+        <span className="block md:inline text-xs text-muted-foreground font-medium">
           {allLayers.length} Layers • {allLayers.reduce((a, b) => a + b, 0)} Total Nodes
         </span>
-        <span className="text-xs text-blue-600 ml-3">💡 Click any neuron to explore its details</span>
+        <span className="block md:inline text-xs text-blue-600 md:ml-3 animate-pulse">
+          💡 Click any neuron to explore its details
+        </span>
       </div>
 
       {/* Neuron Details Modal */}

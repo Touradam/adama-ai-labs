@@ -4,6 +4,10 @@ export const BUILT_IN_PRESETS: NetworkPreset[] = [
   {
     name: 'Beginner',
     description: 'Simple network with safe defaults. Perfect for learning and small datasets.',
+    icon: '🌱',
+    difficulty: 'beginner',
+    estimatedTime: '20s',
+    useCase: 'Learning & Basics',
     config: {
       inputLayers: 2,
       hiddenLayers: [16],
@@ -23,6 +27,10 @@ export const BUILT_IN_PRESETS: NetworkPreset[] = [
     name: 'Standard (Recommended)',
     description:
       'Production-ready with regularization, early stopping, and class balancing. Best for most tasks.',
+    icon: '🌳',
+    difficulty: 'intermediate',
+    estimatedTime: '45s',
+    useCase: 'Classification',
     config: {
       inputLayers: 2,
       hiddenLayers: [64, 32],
@@ -42,6 +50,10 @@ export const BUILT_IN_PRESETS: NetworkPreset[] = [
     name: 'Deep Learning',
     description:
       'Advanced 4-layer network with full regularization suite. For complex patterns and large datasets.',
+    icon: '🌲',
+    difficulty: 'advanced',
+    estimatedTime: '90s',
+    useCase: 'Complex Patterns',
     config: {
       inputLayers: 2,
       hiddenLayers: [128, 64, 32, 16],
@@ -60,6 +72,10 @@ export const BUILT_IN_PRESETS: NetworkPreset[] = [
   {
     name: 'Fast Training',
     description: 'Quick experiments with minimal epochs. Good for rapid prototyping and testing.',
+    icon: '⚡',
+    difficulty: 'beginner',
+    estimatedTime: '15s',
+    useCase: 'Rapid Prototyping',
     config: {
       inputLayers: 2,
       hiddenLayers: [32],

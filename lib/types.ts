@@ -73,6 +73,10 @@ export interface PredictionResult {
 export interface NetworkPreset {
   name: string;
   description: string;
+  icon?: string;
+  difficulty?: 'beginner' | 'intermediate' | 'advanced';
+  estimatedTime?: string;
+  useCase?: string;
   config: NetworkConfig;
 }
 
