@@ -84,9 +84,13 @@ export function NetworkDiagram({ inputNodes, hiddenLayers, outputNodes }: Networ
                       {Array.from({ length: displaySize }).map((_, nodeIndex) => {
                         const y1 = startY + nodeIndex * nodeSpacing;
                         const nextDisplaySize = displayLayers[layerIndex + 1];
+                        
+                        // Calculate next layer's centered start position
+                        const nextLayerHeight = nextDisplaySize * nodeSpacing;
+                        const nextStartY = 50 + (maxLayerSize * nodeSpacing - nextLayerHeight) / 2;
 
                         return Array.from({ length: nextDisplaySize }).map((_, nextNodeIndex) => {
-                          const y2 = startY + nextNodeIndex * nodeSpacing;
+                          const y2 = nextStartY + nextNodeIndex * nodeSpacing;
                           return (
                             <line
                               key={`${nodeIndex}-${nextNodeIndex}`}
