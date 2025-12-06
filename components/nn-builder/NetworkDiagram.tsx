@@ -9,115 +9,81 @@ interface NetworkDiagramProps {
 }
 
 export function NetworkDiagram({ inputNodes, hiddenLayers, outputNodes }: NetworkDiagramProps) {
-  const allLayers = [inputNodes, ...hiddenLayers, outputNodes];
-  const maxNodes = Math.max(...allLayers);
-  const nodeRadius = 8;
-  const layerSpacing = 120;
-  const nodeSpacing = 40;
+  const totalLayers = hiddenLayers.length + 2;
 
   return (
-    <div className="bg-white rounded-lg border shadow-sm p-6">
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold text-charcoal">Neural Network Architecture</h3>
-        <p className="text-sm text-muted-foreground">
-          {inputNodes} → {hiddenLayers.join(' → ')} → {outputNodes}
-        </p>
-      </div>
-      
-      <div className="overflow-x-auto">
-        <svg 
-          width={allLayers.length * layerSpacing + 100} 
-          height={maxNodes * nodeSpacing + 60}
-          className="mx-auto"
-        >
-          {allLayers.map((layerSize, layerIndex) => {
-            const x = layerIndex * layerSpacing + 50;
-            const layerHeight = layerSize * nodeSpacing;
-            const startY = (maxNodes * nodeSpacing - layerHeight) / 2 + 30;
+    <div className="bg-white rounded-lg border shadow-sm p-4">
+      <div className="flex items-center justify-between gap-4">
+        {/* Left side - Architecture text */}
+        <div className="flex-1">
+          <h3 className="text-base font-semibold text-charcoal mb-1">
+            Neural Network
+          </h3>
+          <p className="text-sm text-muted-foreground font-mono">
+            {inputNodes} → {hiddenLayers.join(' → ')} → {outputNodes}
+          </p>
+        </div>
 
-            return (
-              <g key={layerIndex}>
-                {/* Draw connections to next layer */}
-                {layerIndex < allLayers.length - 1 && (
-                  <>
-                    {Array.from({ length: layerSize }).map((_, nodeIndex) => {
-                      const y1 = startY + nodeIndex * nodeSpacing;
-                      const nextLayerSize = allLayers[layerIndex + 1];
-                      const nextLayerHeight = nextLayerSize * nodeSpacing;
-                      const nextStartY = (maxNodes * nodeSpacing - nextLayerHeight) / 2 + 30;
+        {/* Right side - Visual representation */}
+        <div className="flex items-center gap-3">
+          {/* Input */}
+          <div className="flex flex-col items-center gap-1">
+            <div className="flex flex-col gap-0.5">
+              {Array.from({ length: Math.min(inputNodes, 3) }).map((_, i) => (
+                <div key={i} className="w-2 h-2 rounded-full bg-emerald-500"></div>
+              ))}
+              {inputNodes > 3 && (
+                <div className="text-xs text-muted-foreground">...</div>
+              )}
+            </div>
+            <span className="text-xs text-muted-foreground">In</span>
+          </div>
 
-                      return Array.from({ length: nextLayerSize }).map((_, nextNodeIndex) => {
-                        const y2 = nextStartY + nextNodeIndex * nodeSpacing;
-                        return (
-                          <line
-                            key={`${nodeIndex}-${nextNodeIndex}`}
-                            x1={x + nodeRadius}
-                            y1={y1}
-                            x2={x + layerSpacing - nodeRadius}
-                            y2={y2}
-                            stroke="#e5e7eb"
-                            strokeWidth="1"
-                            opacity="0.3"
-                          />
-                        );
-                      });
-                    })}
-                  </>
-                )}
+          {/* Arrow */}
+          <svg className="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
 
-                {/* Draw nodes */}
-                {Array.from({ length: layerSize }).map((_, nodeIndex) => {
-                  const y = startY + nodeIndex * nodeSpacing;
-                  const color = 
-                    layerIndex === 0 ? '#10b981' : 
-                    layerIndex === allLayers.length - 1 ? '#f59e0b' : 
-                    '#2374F2';
+          {/* Hidden layers */}
+          {hiddenLayers.map((neurons, idx) => (
+            <React.Fragment key={idx}>
+              <div className="flex flex-col items-center gap-1">
+                <div className="flex flex-col gap-0.5">
+                  {Array.from({ length: Math.min(neurons, 3) }).map((_, i) => (
+                    <div key={i} className="w-2 h-2 rounded-full bg-ai-blue"></div>
+                  ))}
+                  {neurons > 3 && (
+                    <div className="text-xs text-muted-foreground">...</div>
+                  )}
+                </div>
+                <span className="text-xs text-muted-foreground">H{idx + 1}</span>
+              </div>
+              <svg className="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </React.Fragment>
+          ))}
 
-                  return (
-                    <circle
-                      key={nodeIndex}
-                      cx={x}
-                      cy={y}
-                      r={nodeRadius}
-                      fill={color}
-                      stroke="white"
-                      strokeWidth="2"
-                    />
-                  );
-                })}
-
-                {/* Layer label */}
-                <text
-                  x={x}
-                  y={15}
-                  textAnchor="middle"
-                  fontSize="12"
-                  fill="#6b7280"
-                  fontWeight="600"
-                >
-                  {layerIndex === 0 ? 'Input' : 
-                   layerIndex === allLayers.length - 1 ? 'Output' : 
-                   `Hidden ${layerIndex}`}
-                </text>
-              </g>
-            );
-          })}
-        </svg>
+          {/* Output */}
+          <div className="flex flex-col items-center gap-1">
+            <div className="flex flex-col gap-0.5">
+              {Array.from({ length: Math.min(outputNodes, 3) }).map((_, i) => (
+                <div key={i} className="w-2 h-2 rounded-full bg-amber-500"></div>
+              ))}
+              {outputNodes > 3 && (
+                <div className="text-xs text-muted-foreground">...</div>
+              )}
+            </div>
+            <span className="text-xs text-muted-foreground">Out</span>
+          </div>
+        </div>
       </div>
 
-      <div className="mt-4 grid grid-cols-3 gap-4 text-sm">
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
-          <span className="text-muted-foreground">Input Layer</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-ai-blue"></div>
-          <span className="text-muted-foreground">Hidden Layers</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-amber-500"></div>
-          <span className="text-muted-foreground">Output Layer</span>
-        </div>
+      {/* Stats */}
+      <div className="mt-3 pt-3 border-t flex items-center justify-between text-xs text-muted-foreground">
+        <span>{totalLayers} Layers</span>
+        <span>•</span>
+        <span>{hiddenLayers.reduce((a, b) => a + b, 0) + inputNodes + outputNodes} Total Nodes</span>
       </div>
     </div>
   );
