@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { NeuronDetails } from './NeuronDetails';
+import { FunctionSelector } from './FunctionSelector';
 
 interface NetworkDiagramProps {
   inputNodes: number;
@@ -9,11 +10,17 @@ interface NetworkDiagramProps {
   outputNodes: number;
   activation?: string;
   outputActivation?: string;
+  lossFunction?: string;
+  optimizer?: string;
   trainingStats?: {
     loss: number;
     accuracy: number;
     epoch: number;
   };
+  onActivationChange?: (value: string) => void;
+  onOutputActivationChange?: (value: string) => void;
+  onLossFunctionChange?: (value: string) => void;
+  onOptimizerChange?: (value: string) => void;
 }
 
 export function NetworkDiagram({ 
@@ -22,12 +29,22 @@ export function NetworkDiagram({
   outputNodes,
   activation = 'relu',
   outputActivation = 'softmax',
-  trainingStats
+  lossFunction = 'categoricalCrossentropy',
+  optimizer = 'adam',
+  trainingStats,
+  onActivationChange,
+  onOutputActivationChange,
+  onLossFunctionChange,
+  onOptimizerChange,
 }: NetworkDiagramProps) {
   const [selectedNeuron, setSelectedNeuron] = useState<{
     layerIndex: number;
     nodeIndex: number;
     layerType: 'input' | 'hidden' | 'output';
+  } | null>(null);
+  
+  const [selectorModal, setSelectorModal] = useState<{
+    type: 'activation' | 'loss' | 'optimizer' | 'activationOutput';
   } | null>(null);
 
   const allLayers = [inputNodes, ...hiddenLayers, outputNodes];
@@ -228,10 +245,14 @@ export function NetworkDiagram({
 
         {/* Processing Steps - Right Side */}
         <div className="absolute -right-48 top-1/4 flex flex-col gap-2">
-          <div className="px-3 py-2 bg-gradient-to-r from-green-100 to-emerald-100 rounded-lg border-2 border-green-400 shadow-sm">
+          <button
+            onClick={() => setSelectorModal({ type: 'activationOutput' })}
+            className="px-3 py-2 bg-gradient-to-r from-green-100 to-emerald-100 rounded-lg border-2 border-green-400 shadow-sm hover:shadow-md transition-all hover:scale-105 cursor-pointer"
+          >
             <p className="text-xs font-bold text-green-700">Activation</p>
             <p className="text-xs font-bold text-green-700">Function</p>
-          </div>
+            <p className="text-xs text-green-600 uppercase mt-1">{outputActivation}</p>
+          </button>
           <svg className="w-6 h-6 text-gray-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>
@@ -262,21 +283,32 @@ export function NetworkDiagram({
         <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
         </svg>
-        <div className="px-3 py-2 bg-gradient-to-r from-red-100 to-pink-100 rounded-lg border-2 border-red-400 shadow-sm">
+        <button
+          onClick={() => setSelectorModal({ type: 'optimizer' })}
+          className="px-3 py-2 bg-gradient-to-r from-red-100 to-pink-100 rounded-lg border-2 border-red-400 shadow-sm hover:shadow-md transition-all hover:scale-105 cursor-pointer"
+        >
           <p className="text-xs font-bold text-red-700 text-center">Optimizer</p>
-        </div>
+          <p className="text-xs text-red-600 uppercase">{optimizer}</p>
+        </button>
         <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
         </svg>
         <div className="px-3 py-2 bg-gray-100 rounded-lg border border-gray-300 shadow-sm">
           <p className="text-xs font-semibold text-gray-700 text-center">Loss Score</p>
+          {trainingStats && (
+            <p className="text-xs text-gray-600 font-mono">{trainingStats.loss.toFixed(4)}</p>
+          )}
         </div>
         <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
         </svg>
-        <div className="px-3 py-2 bg-gradient-to-r from-yellow-100 to-amber-100 rounded-lg border-2 border-yellow-400 shadow-sm">
+        <button
+          onClick={() => setSelectorModal({ type: 'loss' })}
+          className="px-3 py-2 bg-gradient-to-r from-yellow-100 to-amber-100 rounded-lg border-2 border-yellow-400 shadow-sm hover:shadow-md transition-all hover:scale-105 cursor-pointer"
+        >
           <p className="text-xs font-bold text-yellow-700 text-center">Loss Function</p>
-        </div>
+          <p className="text-xs text-yellow-600 text-center capitalize">{lossFunction}</p>
+        </button>
       </div>
 
       {/* Legend */}
@@ -328,6 +360,57 @@ export function NetworkDiagram({
           bias={selectedNeuron.layerType !== 'input' ? generateSampleBias() : undefined}
           trainingStats={trainingStats}
           onClose={() => setSelectedNeuron(null)}
+        />
+      )}
+
+      {/* Function Selector Modals */}
+      {selectorModal && selectorModal.type === 'activation' && onActivationChange && (
+        <FunctionSelector
+          type="activation"
+          currentValue={activation}
+          onChange={(value) => {
+            onActivationChange(value);
+            setSelectorModal(null);
+          }}
+          onClose={() => setSelectorModal(null)}
+          isOutput={false}
+        />
+      )}
+
+      {selectorModal && selectorModal.type === 'activationOutput' && onOutputActivationChange && (
+        <FunctionSelector
+          type="activation"
+          currentValue={outputActivation}
+          onChange={(value) => {
+            onOutputActivationChange(value);
+            setSelectorModal(null);
+          }}
+          onClose={() => setSelectorModal(null)}
+          isOutput={true}
+        />
+      )}
+
+      {selectorModal && selectorModal.type === 'loss' && onLossFunctionChange && (
+        <FunctionSelector
+          type="loss"
+          currentValue={lossFunction}
+          onChange={(value) => {
+            onLossFunctionChange(value);
+            setSelectorModal(null);
+          }}
+          onClose={() => setSelectorModal(null)}
+        />
+      )}
+
+      {selectorModal && selectorModal.type === 'optimizer' && onOptimizerChange && (
+        <FunctionSelector
+          type="optimizer"
+          currentValue={optimizer}
+          onChange={(value) => {
+            onOptimizerChange(value);
+            setSelectorModal(null);
+          }}
+          onClose={() => setSelectorModal(null)}
         />
       )}
     </div>

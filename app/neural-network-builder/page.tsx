@@ -170,6 +170,8 @@ export default function NeuralNetworkBuilderPage() {
           outputNodes={config.outputLayers}
           activation={config.hiddenActivation}
           outputActivation={config.outputActivation}
+          lossFunction={config.lossFunction}
+          optimizer={config.optimizer}
           trainingStats={
             trainingData.length > 0
               ? {
@@ -179,6 +181,10 @@ export default function NeuralNetworkBuilderPage() {
                 }
               : undefined
           }
+          onActivationChange={(value) => setConfig(prev => ({ ...prev, hiddenActivation: value as any }))}
+          onOutputActivationChange={(value) => setConfig(prev => ({ ...prev, outputActivation: value as any }))}
+          onLossFunctionChange={(value) => setConfig(prev => ({ ...prev, lossFunction: value as any }))}
+          onOptimizerChange={(value) => setConfig(prev => ({ ...prev, optimizer: value as any }))}
         />
 
         <div className="grid lg:grid-cols-3 gap-6">
