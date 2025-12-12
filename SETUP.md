@@ -73,7 +73,7 @@ Create a `.env.local` file in the root directory:
 RESEND_API_KEY=your_resend_api_key_here
 
 # Contact form recipient email
-CONTACT_EMAIL=hello@adamaailabs.com
+CONTACT_EMAIL=touradam3@gmail.com
 ```
 
 ### 3. Run Development Server
@@ -250,7 +250,7 @@ npm run start
 If you need help or have questions:
 - Check the README.md for detailed information
 - Review the code comments
-- Contact: hello@adamaailabs.com
+- Contact: touradam3@gmail.com
 
 ## Next Steps
 

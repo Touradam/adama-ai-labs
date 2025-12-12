@@ -55,7 +55,7 @@ export default function PrivacyPage() {
               <p>
                 You have the right to access, correct, or delete your personal
                 information. To exercise these rights, please contact us at
-                hello@adamaailabs.com.
+                touradam3@gmail.com.
               </p>
 
               <h2 className="text-2xl font-semibold text-charcoal mt-8 mb-4">
@@ -63,7 +63,7 @@ export default function PrivacyPage() {
               </h2>
               <p>
                 If you have any questions about this Privacy Policy, please contact us
-                at hello@adamaailabs.com.
+                at touradam3@gmail.com.
               </p>
             </div>
           </div>

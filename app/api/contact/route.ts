@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     // Send email using Resend
     const data = await resend.emails.send({
       from: "A-dama AI Labs <onboarding@resend.dev>", // Replace with your verified domain
-      to: process.env.CONTACT_EMAIL || "hello@adamaailabs.com",
+      to: process.env.CONTACT_EMAIL || "touradam3@gmail.com",
       replyTo: email,
       subject: `New ${role} Contact Form Submission from ${name}`,
       html: `

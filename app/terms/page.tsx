@@ -84,7 +84,7 @@ export default function TermsPage() {
               </h2>
               <p>
                 For questions about these Terms of Service, please contact us at
-                hello@adamaailabs.com.
+                touradam3@gmail.com.
               </p>
             </div>
           </div>

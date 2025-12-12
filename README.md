@@ -51,7 +51,7 @@ Create a `.env.local` file in the root directory:
 RESEND_API_KEY=your_resend_api_key_here
 
 # Contact form recipient email
-CONTACT_EMAIL=hello@adamaailabs.com
+CONTACT_EMAIL=touradam3@gmail.com
 ```
 
 4. Run the development server
@@ -194,4 +194,4 @@ Edit page-specific metadata in each page's `metadata` export or the root layout.
 
 ## Support
 
-For questions or support, contact hello@adamaailabs.com
+For questions or support, contact touradam3@gmail.com

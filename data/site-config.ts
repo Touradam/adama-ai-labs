@@ -57,7 +57,7 @@ export const socialLinks: SocialLink[] = [
 ];
 
 export const contactInfo = {
-  email: "hello@adamaailabs.com",
+  email: "touradam3@gmail.com",
   phone: "+1 (555) 123-4567", // Placeholder
   location: "United States",
 };
