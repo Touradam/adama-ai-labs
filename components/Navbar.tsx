@@ -53,7 +53,7 @@ export function Navbar() {
           {/* CTA Button (Desktop) */}
           <div className="hidden md:block">
             <Link href="/contact">
-              <Button className="bg-charcoal hover:bg-charcoal/90">
+              <Button size="lg" className="bg-energy-orange hover:bg-energy-orange/90 text-white text-base px-8">
                 Get Started
               </Button>
             </Link>
@@ -96,7 +96,7 @@ export function Navbar() {
                 </Link>
               ))}
               <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>
-                <Button className="w-full bg-charcoal hover:bg-charcoal/90">
+                <Button size="lg" className="w-full bg-energy-orange hover:bg-energy-orange/90 text-white text-base px-8">
                   Get Started
                 </Button>
               </Link>
