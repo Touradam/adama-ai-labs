@@ -1,7 +1,9 @@
 import { MetadataRoute } from "next";
 
+export const dynamic = "force-static";
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://adamaailabs.com";
+  const baseUrl = "https://touradam.github.io/adama-ai-labs";
 
   return [
     {
