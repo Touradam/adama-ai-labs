@@ -6,12 +6,6 @@ const nextConfig: NextConfig = {
 
   // Static export for GitHub Pages
   output: 'export',
-  
-  // Base path for GitHub Pages (repository name)
-  basePath: process.env.NODE_ENV === 'production' ? '/adama-ai-labs' : '',
-  
-  // Asset prefix for GitHub Pages
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/adama-ai-labs/' : '',
 
   // Image optimization (disabled for static export)
   images: {
