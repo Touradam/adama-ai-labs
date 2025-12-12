@@ -295,3 +295,4 @@ export function TrainingChart({ data, isTraining }: TrainingChartProps) {
   );
 }
 
+
