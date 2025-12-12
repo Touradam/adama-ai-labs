@@ -105,12 +105,12 @@ export function Hero({
                   <Button
                     size="lg"
                     variant="outline"
-                    className={`text-base px-8 ${
+                    className={`text-base px-8 font-semibold border-2 ${
                       secondaryCTA.variant === "blue"
                         ? "border-ai-blue text-ai-blue hover:bg-ai-blue hover:text-white"
                         : secondaryCTA.variant === "orange"
                         ? "border-energy-orange text-energy-orange hover:bg-energy-orange hover:text-white"
-                        : ""
+                        : "border-charcoal text-charcoal hover:bg-charcoal hover:text-white"
                     }`}
                   >
                     {secondaryCTA.text}

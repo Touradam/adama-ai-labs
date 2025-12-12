@@ -69,7 +69,7 @@ export function CTASection({
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-white text-white hover:bg-white hover:text-charcoal text-base px-8"
+                  className="border-2 border-white/80 text-white hover:bg-white hover:text-charcoal text-base px-8 font-semibold"
                 >
                   {secondaryCTA.text}
                 </Button>
