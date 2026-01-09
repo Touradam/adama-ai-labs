@@ -22,8 +22,8 @@ export default function Home() {
         title="Build tools that optimize your life — don't let AI use you."
         description="A 2-weekend AI education program for anyone who wants to understand AI, think critically about it, and build real tools without becoming dependent on it."
         primaryCTA={{
-          text: "Join Waitlist",
-          href: "/contact",
+          text: "Get in Touch",
+          href: "mailto:touradam3@gmail.com",
           variant: "blue",
         }}
         secondaryCTA={{
@@ -243,15 +243,11 @@ export default function Home() {
       {/* CTA Section */}
       <CTASection
         title="Ready to Take Control of AI?"
-        description="Join the waitlist for our next cohort. Limited spots available."
+        description="Interested in our program? Get in touch to learn more."
         primaryCTA={{
-          text: "Join Waitlist",
-          href: "/contact",
+          text: "Contact Us",
+          href: "mailto:touradam3@gmail.com",
           variant: "blue",
-        }}
-        secondaryCTA={{
-          text: "Learn More About the Program",
-          href: "/learn-ai",
         }}
       />
     </>
