@@ -56,7 +56,7 @@ export const contactInfo = {
 };
 
 export const siteInfo = {
-  name: "A-dama AI Labs",
+  name: "Adama AI Lab",
   tagline: "Build tools that optimize your life — don't let AI use you.",
   description:
     "A 2-weekend AI education program teaching anyone to understand AI, think critically about it, and build real tools without becoming dependent on it.",
