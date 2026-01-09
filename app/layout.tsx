@@ -20,34 +20,36 @@ const plusJakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL("https://adamaailabs.com"),
   title: {
-    default: "A-dama AI Labs | AI Education & Automation",
-    template: "%s | A-dama AI Labs",
+    default: "Adama AI Lab | 2-Weekend AI Education Program",
+    template: "%s | Adama AI Lab",
   },
   description:
-    "Empowering students to learn AI and helping founders automate their businesses with custom AI agents, machine learning solutions, and Python automation.",
+    "Understand the machine before you trust it. A 2-weekend AI education program teaching you to understand AI, build tools, and keep control. First bootcamp FREE!",
   keywords: [
     "AI education",
-    "machine learning",
-    "AI agents",
-    "Python automation",
-    "neural networks",
-    "LLM agents",
-    "AI courses",
-    "business automation",
-    "AI mentorship",
-    "machine learning solutions",
+    "AI bootcamp",
+    "learn AI",
+    "AI weekend program",
+    "AI fundamentals",
+    "build AI tools",
+    "AI literacy",
+    "ethical AI",
+    "AI training",
+    "AI course",
+    "free AI bootcamp",
+    "AI workshop",
   ],
-  authors: [{ name: "A-dama AI Labs" }],
-  creator: "A-dama AI Labs",
-  publisher: "A-dama AI Labs",
+  authors: [{ name: "Adama AI Lab" }],
+  creator: "Adama AI Lab",
+  publisher: "Adama AI Lab",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://adamaailabs.com",
-    siteName: "A-dama AI Labs",
-    title: "A-dama AI Labs | AI Education & Automation",
+    siteName: "Adama AI Lab",
+    title: "Adama AI Lab | 2-Weekend AI Education Program",
     description:
-      "Empowering students to learn AI and helping founders automate their businesses with custom AI agents, machine learning solutions, and Python automation.",
+      "Understand the machine before you trust it. Learn AI, build tools, keep control. First bootcamp FREE!",
     images: [
       {
         url: "/og-image.png",
@@ -59,9 +61,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "A-dama AI Labs | AI Education & Automation",
+    title: "Adama AI Lab | 2-Weekend AI Education Program",
     description:
-      "Empowering students to learn AI and helping founders automate their businesses.",
+      "Understand the machine before you trust it. Use AI. Don't let it use you. First bootcamp FREE!",
     images: ["/og-image.png"],
     creator: "@adamaailabs",
   },
@@ -83,6 +85,14 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: '#14B8A6',
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -90,6 +100,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${plusJakarta.variable}`}>
+      <head>
+        <meta name="theme-color" content="#14B8A6" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+      </head>
       <body className="font-sans antialiased">
         <Navbar />
         <main className="min-h-screen">{children}</main>
