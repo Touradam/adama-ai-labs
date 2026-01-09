@@ -4,12 +4,10 @@ const nextConfig: NextConfig = {
   // Enable React strict mode for better development experience
   reactStrictMode: true,
 
-  // Static export for GitHub Pages
-  output: 'export',
-
-  // Image optimization (disabled for static export)
+  // Image optimization
   images: {
     unoptimized: true,
+    formats: ['image/webp'],
   },
 
   // Compiler options for better performance
@@ -21,6 +19,15 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion"],
   },
+
+  // Compression
+  compress: true,
+
+  // Powering off x-powered-by header
+  poweredByHeader: false,
+
+  // Generate standalone output for Hostinger
+  output: 'standalone',
 };
 
 export default nextConfig;
