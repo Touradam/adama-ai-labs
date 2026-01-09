@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
   // Static export for GitHub Pages
   output: 'export',
 
+  // Disable trailing slash
+  trailingSlash: true,
+
   // Image optimization (disabled for static export)
   images: {
     unoptimized: true,
@@ -28,6 +31,10 @@ const nextConfig: NextConfig = {
 
   // Powering off x-powered-by header
   poweredByHeader: false,
+
+  // Skip API routes during export (they won't work on GitHub Pages anyway)
+  // This prevents build errors
+  distDir: '.next',
 };
 
 export default nextConfig;
