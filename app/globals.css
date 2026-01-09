@@ -1,0 +1,213 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* Fonts */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-jakarta), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  
+  /* Colors */
+  --color-background: rgb(var(--background));
+  --color-foreground: rgb(var(--foreground));
+  --color-card: rgb(var(--card));
+  --color-card-foreground: rgb(var(--card-foreground));
+  --color-popover: rgb(var(--popover));
+  --color-popover-foreground: rgb(var(--popover-foreground));
+  --color-primary: rgb(var(--primary));
+  --color-primary-foreground: rgb(var(--primary-foreground));
+  --color-secondary: rgb(var(--secondary));
+  --color-secondary-foreground: rgb(var(--secondary-foreground));
+  --color-muted: rgb(var(--muted));
+  --color-muted-foreground: rgb(var(--muted-foreground));
+  --color-accent: rgb(var(--accent));
+  --color-accent-foreground: rgb(var(--accent-foreground));
+  --color-destructive: rgb(var(--destructive));
+  --color-destructive-foreground: rgb(var(--destructive-foreground));
+  --color-border: rgb(var(--border));
+  --color-input: rgb(var(--input));
+  --color-ring: rgb(var(--ring));
+  
+  /* Brand Colors */
+  --color-charcoal: rgb(var(--charcoal));
+  --color-ai-blue: rgb(var(--ai-blue));
+  --color-energy-orange: rgb(var(--energy-orange));
+  --color-soft-gray: rgb(var(--soft-gray));
+  
+  /* Radius */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.625rem;
+  
+  /* A-dama AI Labs Brand Colors */
+  --charcoal: 26 26 26;
+  --ai-blue: 35 116 242;
+  --energy-orange: 247 165 54;
+  --soft-gray: 245 245 247;
+  
+  /* Base Colors */
+  --background: 255 255 255;
+  --foreground: 26 26 26;
+  
+  /* Card */
+  --card: 255 255 255;
+  --card-foreground: 26 26 26;
+  
+  /* Popover */
+  --popover: 255 255 255;
+  --popover-foreground: 26 26 26;
+  
+  /* Primary (Charcoal) */
+  --primary: 26 26 26;
+  --primary-foreground: 255 255 255;
+  
+  /* Secondary (Soft Gray) */
+  --secondary: 245 245 247;
+  --secondary-foreground: 26 26 26;
+  
+  /* Muted */
+  --muted: 245 245 247;
+  --muted-foreground: 115 115 115;
+  
+  /* Accent */
+  --accent: 245 245 247;
+  --accent-foreground: 26 26 26;
+  
+  /* Destructive */
+  --destructive: 239 68 68;
+  --destructive-foreground: 255 255 255;
+  
+  /* Border & Input */
+  --border: 229 229 229;
+  --input: 229 229 229;
+  --ring: 26 26 26;
+}
+
+.dark {
+  /* Base Colors */
+  --background: 18 18 18;
+  --foreground: 255 255 255;
+  
+  /* Card */
+  --card: 26 26 26;
+  --card-foreground: 255 255 255;
+  
+  /* Popover */
+  --popover: 26 26 26;
+  --popover-foreground: 255 255 255;
+  
+  /* Primary */
+  --primary: 255 255 255;
+  --primary-foreground: 26 26 26;
+  
+  /* Secondary */
+  --secondary: 38 38 38;
+  --secondary-foreground: 255 255 255;
+  
+  /* Muted */
+  --muted: 38 38 38;
+  --muted-foreground: 163 163 163;
+  
+  /* Accent */
+  --accent: 38 38 38;
+  --accent-foreground: 255 255 255;
+  
+  /* Destructive */
+  --destructive: 220 38 38;
+  --destructive-foreground: 255 255 255;
+  
+  /* Border */
+  --border: 38 38 38;
+  --input: 38 38 38;
+  --ring: 212 212 212;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+  
+  /* Custom utility classes */
+  .text-ai-blue {
+    color: rgb(var(--ai-blue));
+  }
+  
+  .bg-ai-blue {
+    background-color: rgb(var(--ai-blue));
+  }
+  
+  .text-energy-orange {
+    color: rgb(var(--energy-orange));
+  }
+  
+  .bg-energy-orange {
+    background-color: rgb(var(--energy-orange));
+  }
+  
+  .text-charcoal {
+    color: rgb(var(--charcoal));
+  }
+  
+  .bg-charcoal {
+    background-color: rgb(var(--charcoal));
+  }
+  
+  .bg-soft-gray {
+    background-color: rgb(var(--soft-gray));
+  }
+}
+
+@layer utilities {
+  @keyframes ping-slow {
+    75%, 100% {
+      transform: scale(1.5);
+      opacity: 0;
+    }
+  }
+  
+  .animate-ping-slow {
+    animation: ping-slow 3s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+  
+  .animate-shimmer {
+    animation: shimmer 3s linear infinite;
+    background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%);
+    background-size: 1000px 100%;
+  }
+}
