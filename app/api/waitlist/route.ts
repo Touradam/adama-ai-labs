@@ -5,12 +5,12 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email } = await request.json();
+    const { name, email, objective } = await request.json();
 
     // Validate input
-    if (!name || !email) {
+    if (!name || !email || !objective) {
       return NextResponse.json(
-        { error: "Name and email are required" },
+        { error: "Name, email, and objective are required" },
         { status: 400 }
       );
     }
@@ -40,6 +40,10 @@ export async function POST(request: NextRequest) {
               <p style="margin: 10px 0;"><strong>Name:</strong> ${name}</p>
               <p style="margin: 10px 0;"><strong>Email:</strong> ${email}</p>
               <p style="margin: 10px 0;"><strong>Time:</strong> ${new Date().toLocaleString()}</p>
+            </div>
+            <div style="background-color: #F0FDFA; border-left: 4px solid #14B8A6; padding: 20px; margin: 20px 0;">
+              <p style="margin: 0 0 10px 0;"><strong style="color: #14B8A6;">Main Objective:</strong></p>
+              <p style="margin: 0; color: #333; line-height: 1.6;">${objective}</p>
             </div>
             <p style="color: #666; font-size: 14px;">This person has joined the waitlist for the 2-weekend AI education program.</p>
           </div>

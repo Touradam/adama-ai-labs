@@ -8,6 +8,7 @@ export function WaitlistForm() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    objective: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -29,7 +30,7 @@ export function WaitlistForm() {
 
       if (response.ok) {
         setIsSubmitted(true);
-        setFormData({ name: "", email: "" });
+        setFormData({ name: "", email: "", objective: "" });
       } else {
         const data = await response.json();
         setError(data.error || "Something went wrong. Please try again.");
@@ -104,6 +105,21 @@ export function WaitlistForm() {
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-teal focus:ring-2 focus:ring-teal/20 outline-none transition-all text-base"
             placeholder="your.email@example.com"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="objective" className="block text-sm font-semibold text-gray-700 mb-2">
+            What's your main objective for taking this course? *
+          </label>
+          <textarea
+            id="objective"
+            required
+            value={formData.objective}
+            onChange={(e) => setFormData({ ...formData, objective: e.target.value })}
+            className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-teal focus:ring-2 focus:ring-teal/20 outline-none transition-all text-base resize-none"
+            placeholder="Tell us what you hope to achieve or learn..."
+            rows={4}
           />
         </div>
 
