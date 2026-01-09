@@ -28,7 +28,7 @@ export function Navbar() {
         <div className="flex items-center justify-center h-16 md:h-20">
           {/* Logo - Centered */}
           <Link href="/" className="flex items-center space-x-2">
-            <span className="text-xl md:text-2xl font-bold text-charcoal font-heading">
+            <span className="text-xl md:text-2xl font-bold text-black font-heading">
               {siteInfo.name}
             </span>
           </Link>

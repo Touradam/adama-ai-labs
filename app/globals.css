@@ -31,8 +31,9 @@
   
   /* Brand Colors */
   --color-charcoal: rgb(var(--charcoal));
-  --color-ai-blue: rgb(var(--ai-blue));
-  --color-energy-orange: rgb(var(--energy-orange));
+  --color-teal: rgb(var(--teal));
+  --color-cyan: rgb(var(--cyan));
+  --color-gold: rgb(var(--gold));
   --color-soft-gray: rgb(var(--soft-gray));
   
   /* Radius */
@@ -45,10 +46,11 @@
 :root {
   --radius: 0.625rem;
   
-  /* A-dama AI Labs Brand Colors */
-  --charcoal: 26 26 26;
-  --ai-blue: 35 116 242;
-  --energy-orange: 247 165 54;
+  /* Adama AI Lab Brand Colors */
+  --charcoal: 0 0 0;
+  --teal: 20 184 166;
+  --cyan: 6 182 212;
+  --gold: 245 158 11;
   --soft-gray: 245 245 247;
   
   /* Base Colors */
@@ -142,20 +144,28 @@
   }
   
   /* Custom utility classes */
-  .text-ai-blue {
-    color: rgb(var(--ai-blue));
+  .text-teal {
+    color: rgb(var(--teal));
   }
   
-  .bg-ai-blue {
-    background-color: rgb(var(--ai-blue));
+  .bg-teal {
+    background-color: rgb(var(--teal));
   }
   
-  .text-energy-orange {
-    color: rgb(var(--energy-orange));
+  .text-cyan {
+    color: rgb(var(--cyan));
   }
   
-  .bg-energy-orange {
-    background-color: rgb(var(--energy-orange));
+  .bg-cyan {
+    background-color: rgb(var(--cyan));
+  }
+  
+  .text-gold {
+    color: rgb(var(--gold));
+  }
+  
+  .bg-gold {
+    background-color: rgb(var(--gold));
   }
   
   .text-charcoal {

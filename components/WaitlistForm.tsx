@@ -43,11 +43,11 @@ export function WaitlistForm() {
 
   if (isSubmitted) {
     return (
-      <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-8 md:p-12 border-2 border-emerald-200 text-center">
-        <div className="w-16 h-16 rounded-full bg-emerald-500 flex items-center justify-center mx-auto mb-6">
+      <div className="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-2xl p-8 md:p-12 border-2 border-teal text-center">
+        <div className="w-16 h-16 rounded-full bg-teal flex items-center justify-center mx-auto mb-6">
           <CheckCircle2 className="w-10 h-10 text-white" />
         </div>
-        <h3 className="text-2xl md:text-3xl font-bold text-charcoal mb-4">
+        <h3 className="text-2xl md:text-3xl font-bold text-black mb-4">
           You're on the list!
         </h3>
         <p className="text-lg text-gray-700 mb-6">
@@ -56,7 +56,7 @@ export function WaitlistForm() {
         <Button
           onClick={() => setIsSubmitted(false)}
           variant="outline"
-          className="border-2 border-emerald-500 text-emerald-700 hover:bg-emerald-500 hover:text-white"
+          className="border-2 border-teal text-teal hover:bg-teal hover:text-white"
         >
           Submit Another
         </Button>
@@ -67,12 +67,12 @@ export function WaitlistForm() {
   return (
     <div className="bg-white rounded-2xl p-8 md:p-12 shadow-2xl border-2 border-gray-200">
       <div className="text-center mb-8">
-        <h3 className="text-3xl md:text-4xl font-bold text-charcoal mb-4 font-heading">
+        <h3 className="text-3xl md:text-4xl font-bold text-black mb-4 font-heading">
           Join the Waitlist
         </h3>
         <p className="text-lg text-gray-600">
           Be among the first to experience our program.{" "}
-          <span className="font-bold text-ai-blue">First session is FREE!</span>
+          <span className="font-bold text-teal">First bootcamp is FREE!</span>
         </p>
       </div>
 
@@ -87,7 +87,7 @@ export function WaitlistForm() {
             required
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-ai-blue focus:ring-2 focus:ring-ai-blue/20 outline-none transition-all text-base"
+            className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-teal focus:ring-2 focus:ring-teal/20 outline-none transition-all text-base"
             placeholder="Enter your full name"
           />
         </div>
@@ -102,7 +102,7 @@ export function WaitlistForm() {
             required
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-ai-blue focus:ring-2 focus:ring-ai-blue/20 outline-none transition-all text-base"
+            className="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-teal focus:ring-2 focus:ring-teal/20 outline-none transition-all text-base"
             placeholder="your.email@example.com"
           />
         </div>
@@ -116,7 +116,7 @@ export function WaitlistForm() {
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-gradient-to-r from-ai-blue to-indigo-600 hover:from-ai-blue/90 hover:to-indigo-700 text-white text-lg py-6 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all"
+          className="w-full bg-gold hover:bg-gold/90 text-black text-lg py-6 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all"
         >
           {isSubmitting ? (
             <>
@@ -129,10 +129,9 @@ export function WaitlistForm() {
         </Button>
 
         <p className="text-xs text-center text-gray-500">
-          By joining, you agree to receive updates about the program. First session is free for waitlist members.
+          By joining, you agree to receive updates about the program. First bootcamp (Week 1) is free for waitlist members.
         </p>
       </form>
     </div>
   );
 }
-

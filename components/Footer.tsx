@@ -12,7 +12,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-charcoal text-white">
+    <footer className="bg-black text-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         <div className="max-w-4xl mx-auto text-center">
           {/* Brand Section */}
@@ -25,7 +25,7 @@ export function Footer() {
             <p className="text-white/70 mb-6 text-lg">
               {siteInfo.tagline}
             </p>
-            <p className="text-white/60 mb-6 max-w-2xl mx-auto">
+            <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
               {siteInfo.description}
             </p>
           </div>
@@ -34,7 +34,7 @@ export function Footer() {
           <div className="mb-8">
             <a
               href={`mailto:${contactInfo.email}`}
-              className="inline-flex items-center gap-2 text-white/80 hover:text-white transition-colors"
+              className="inline-flex items-center gap-2 text-teal hover:text-cyan transition-colors"
             >
               <Mail className="w-5 h-5" />
               <span>{contactInfo.email}</span>
@@ -51,7 +51,7 @@ export function Footer() {
                   href={social.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-white/70 hover:text-white transition-colors"
+                  className="text-gray-400 hover:text-teal transition-colors"
                   aria-label={social.platform}
                 >
                   <Icon className="w-6 h-6" />
@@ -61,8 +61,8 @@ export function Footer() {
           </div>
 
           {/* Copyright */}
-          <div className="border-t border-white/10 pt-8">
-            <p className="text-white/60 text-sm">
+          <div className="border-t border-gray-700 pt-8">
+            <p className="text-gray-400 text-sm">
               © {currentYear} {siteInfo.name}. All rights reserved.
             </p>
           </div>
