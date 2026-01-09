@@ -123,3 +123,4 @@ The API will always return success to the user (don't block signups if email fai
 - Use different API keys for development and production
 - Rotate keys if compromised
 
+

@@ -4,7 +4,10 @@ const nextConfig: NextConfig = {
   // Enable React strict mode for better development experience
   reactStrictMode: true,
 
-  // Image optimization
+  // Static export for GitHub Pages
+  output: 'export',
+
+  // Image optimization (disabled for static export)
   images: {
     unoptimized: true,
     formats: ['image/webp'],
@@ -25,9 +28,6 @@ const nextConfig: NextConfig = {
 
   // Powering off x-powered-by header
   poweredByHeader: false,
-
-  // Generate standalone output for Hostinger
-  output: 'standalone',
 };
 
 export default nextConfig;
