@@ -57,7 +57,9 @@ export const contactInfo = {
 
 export const siteInfo = {
   name: "Adama AI Lab",
-  tagline: "Build tools that optimize your life — don't let AI use you.",
+  tagline: "Understand the machine before you trust it.",
+  tagline2: "Use AI. Don't let it use you.",
+  tagline3: "Understand AI. Build tools. Keep control.",
   description:
     "A 2-weekend AI education program teaching anyone to understand AI, think critically about it, and build real tools without becoming dependent on it.",
   url: "https://adamaailabs.com", // Placeholder

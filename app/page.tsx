@@ -3,10 +3,11 @@
 import { Hero } from "@/components/Hero";
 import { SectionWrapper } from "@/components/SectionWrapper";
 import { FeatureCard } from "@/components/FeatureCard";
-import { CTASection } from "@/components/CTASection";
+import { WaitlistForm } from "@/components/WaitlistForm";
 import { programWeeks, programPhilosophy, targetAudience, programOutcomes } from "@/data/courses";
+import { siteInfo } from "@/data/site-config";
 import { useState } from "react";
-import { ChevronDown, ChevronUp, Calendar, Clock, Users, CheckCircle2, Sparkles } from "lucide-react";
+import { ChevronDown, ChevronUp, Calendar, Clock, Users, CheckCircle2, Sparkles, Gift } from "lucide-react";
 
 export default function Home() {
   const [expandedWeek, setExpandedWeek] = useState<string | null>(null);
@@ -17,63 +18,100 @@ export default function Home() {
 
   return (
     <>
-      {/* Hero Section with Enhanced Design */}
+      {/* Hero Section with New Taglines */}
       <div className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
         <div className="absolute inset-0 bg-grid-slate-200/50 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.5))] -z-10"></div>
         <div className="absolute top-20 right-20 w-72 h-72 bg-blue-400/20 rounded-full blur-3xl -z-10"></div>
         <div className="absolute bottom-20 left-20 w-96 h-96 bg-indigo-400/20 rounded-full blur-3xl -z-10"></div>
         
-        <Hero
-          title="Build tools that optimize your life — don't let AI use you."
-          description="A 2-weekend AI education program teaching anyone to understand AI, think critically about it, and build real tools without becoming dependent on it."
-          primaryCTA={{
-            text: "Get in Touch",
-            href: "mailto:touradam3@gmail.com",
-            variant: "blue",
-          }}
-          secondaryCTA={{
-            text: "Learn More",
-            href: "#program",
-          }}
-        />
-      </div>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20 md:pt-40 md:pb-28">
+          <div className="max-w-5xl mx-auto text-center">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-charcoal mb-6 font-heading leading-tight">
+              {siteInfo.tagline}
+            </h1>
+            <div className="space-y-3 mb-8">
+              <p className="text-2xl md:text-3xl font-semibold text-ai-blue">
+                {siteInfo.tagline2}
+              </p>
+              <p className="text-xl md:text-2xl text-gray-700">
+                {siteInfo.tagline3}
+              </p>
+            </div>
+            <p className="text-lg md:text-xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed">
+              A 2-weekend AI education program for anyone who wants to understand AI and build real tools — without becoming dependent on it.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <a href="#waitlist" className="inline-block">
+                <button className="bg-gradient-to-r from-ai-blue to-indigo-600 hover:from-ai-blue/90 hover:to-indigo-700 text-white px-10 py-4 rounded-xl text-lg font-bold shadow-lg hover:shadow-xl transition-all">
+                  Join Free Waitlist
+                </button>
+              </a>
+              <a href="#program" className="inline-block">
+                <button className="border-2 border-ai-blue text-ai-blue hover:bg-ai-blue hover:text-white px-10 py-4 rounded-xl text-lg font-bold transition-all">
+                  Learn More
+                </button>
+              </a>
+            </div>
+          </div>
+        </div>
+          </div>
 
-      {/* Trust Indicators */}
+      {/* Trust Indicators with FREE Badge */}
       <div className="bg-white border-b border-gray-200">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-wrap justify-center items-center gap-8 text-center">
             <div className="flex items-center gap-2">
+              <Gift className="w-5 h-5 text-emerald-600" />
+              <span className="text-sm font-bold text-emerald-600">First Session FREE</span>
+            </div>
+            <div className="flex items-center gap-2">
               <Calendar className="w-5 h-5 text-ai-blue" />
               <span className="text-sm font-medium text-gray-700">6 Days Total</span>
-            </div>
+                </div>
             <div className="flex items-center gap-2">
               <Users className="w-5 h-5 text-ai-blue" />
               <span className="text-sm font-medium text-gray-700">Small Cohorts</span>
-            </div>
+              </div>
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-5 h-5 text-ai-blue" />
               <span className="text-sm font-medium text-gray-700">No Prerequisites</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-ai-blue" />
-              <span className="text-sm font-medium text-gray-700">Hands-On Learning</span>
-            </div>
           </div>
         </div>
-      </div>
+                </div>
+
+      {/* Waitlist Form Section - PROMINENT PLACEMENT */}
+      <SectionWrapper className="bg-gradient-to-b from-white to-blue-50" id="waitlist">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl mx-auto">
+            <div className="text-center mb-8">
+              <div className="inline-block px-4 py-2 bg-emerald-100 text-emerald-700 text-sm font-bold rounded-full mb-4 uppercase tracking-wide">
+                🎉 First Session Free
+              </div>
+              <h2 className="text-4xl md:text-5xl font-bold text-charcoal mb-4 font-heading">
+                Join the Waitlist
+              </h2>
+              <p className="text-xl text-gray-600">
+                Be among the first to experience our program. Limited spots available.
+              </p>
+            </div>
+            <WaitlistForm />
+          </div>
+        </div>
+      </SectionWrapper>
 
       {/* Program Overview Section */}
-      <SectionWrapper className="bg-gradient-to-b from-white to-slate-50" id="program">
+      <SectionWrapper className="bg-gradient-to-b from-blue-50 to-slate-50" id="program">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <div className="inline-block px-4 py-2 bg-ai-blue/10 text-ai-blue text-sm font-bold rounded-full mb-4 uppercase tracking-wide">
               The Program
             </div>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-charcoal mb-6 font-heading">
-              Transform in <span className="text-ai-blue">6 Days</span>
+              {siteInfo.tagline3}
             </h2>
             <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              From AI beginner to confident builder in just two weekends
+              Transform in just 6 days across two weekends
             </p>
           </div>
 
@@ -97,7 +135,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Week Breakdown with Enhanced Design */}
+          {/* Week Breakdown */}
           <div className="space-y-6 max-w-6xl mx-auto">
             {programWeeks.map((week, weekIndex) => (
               <div
@@ -158,7 +196,7 @@ export default function Home() {
                             {day.description}
                           </p>
 
-                          <div className="space-y-2 mb-4">
+                          <div className="space-y-2">
                             {day.topics.slice(0, 4).map((topic, topicIndex) => (
                               <div key={topicIndex} className="flex items-start gap-2">
                                 <CheckCircle2 className="w-4 h-4 text-ai-blue mt-0.5 flex-shrink-0" />
@@ -185,17 +223,14 @@ export default function Home() {
       </SectionWrapper>
 
       {/* Who This Is For Section */}
-      <SectionWrapper className="bg-gradient-to-br from-indigo-50 via-blue-50 to-slate-50">
+      <SectionWrapper className="bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <div className="inline-block px-4 py-2 bg-indigo-100 text-indigo-700 text-sm font-bold rounded-full mb-4 uppercase tracking-wide">
-              Who Should Join
-            </div>
             <h2 className="text-4xl md:text-5xl font-bold text-charcoal mb-6 font-heading">
-              Designed for <span className="text-ai-blue">Everyone</span>
+              {siteInfo.tagline2}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              No prior technical background required. If you want to use AI as a tool, not a crutch — this is for you.
+              This program is for anyone who wants to use AI as a tool, not a crutch.
             </p>
           </div>
 
@@ -203,7 +238,7 @@ export default function Home() {
             {targetAudience.map((audience, index) => (
               <div
                 key={index}
-                className="bg-white rounded-xl p-6 text-center hover:shadow-xl hover:-translate-y-2 transition-all border-2 border-gray-100 hover:border-ai-blue/50"
+                className="bg-gradient-to-br from-slate-50 to-blue-50 rounded-xl p-6 text-center hover:shadow-xl hover:-translate-y-2 transition-all border-2 border-gray-100 hover:border-ai-blue/50"
               >
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-ai-blue to-indigo-600 flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <span className="text-3xl">{audience.icon === "GraduationCap" ? "🎓" : 
@@ -224,17 +259,14 @@ export default function Home() {
       </SectionWrapper>
 
       {/* Core Philosophy Section */}
-      <SectionWrapper className="bg-white">
+      <SectionWrapper className="bg-gradient-to-b from-slate-50 to-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <div className="inline-block px-4 py-2 bg-purple-100 text-purple-700 text-sm font-bold rounded-full mb-4 uppercase tracking-wide">
-              Our Philosophy
-            </div>
             <h2 className="text-4xl md:text-5xl font-bold text-charcoal mb-6 font-heading">
-              Built on <span className="text-ai-blue">Core Principles</span>
+              Core Principles
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              These principles guide everything we teach
+              {siteInfo.tagline}
             </p>
           </div>
 
@@ -242,7 +274,7 @@ export default function Home() {
             {programPhilosophy.map((principle, index) => (
               <div
                 key={index}
-                className="relative bg-gradient-to-br from-slate-50 to-blue-50 rounded-2xl p-8 border-2 border-gray-200 hover:border-ai-blue hover:shadow-2xl transition-all group"
+                className="relative bg-white rounded-2xl p-8 border-2 border-gray-200 hover:border-ai-blue hover:shadow-2xl transition-all group"
               >
                 <div className="absolute top-4 right-4 text-6xl font-bold text-ai-blue/10 group-hover:text-ai-blue/20 transition-colors">
                   {index + 1}
@@ -264,74 +296,27 @@ export default function Home() {
         </div>
       </SectionWrapper>
 
-      {/* What You'll Achieve Section */}
-      <SectionWrapper className="bg-gradient-to-b from-slate-50 to-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <div className="inline-block px-4 py-2 bg-emerald-100 text-emerald-700 text-sm font-bold rounded-full mb-4 uppercase tracking-wide">
-              Program Outcomes
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-charcoal mb-6 font-heading">
-              What You'll <span className="text-ai-blue">Achieve</span>
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Real skills, real projects, real confidence
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {programOutcomes.map((outcome, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-xl p-8 border-2 border-gray-200 hover:border-ai-blue hover:shadow-xl transition-all"
-              >
-                <div className="w-12 h-12 rounded-xl bg-ai-blue/10 flex items-center justify-center mb-4">
-                  <CheckCircle2 className="w-6 h-6 text-ai-blue" />
-                </div>
-                <h3 className="font-bold text-xl text-charcoal mb-3">
-                  {outcome.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  {outcome.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </SectionWrapper>
-
-      {/* Why Now Section */}
+      {/* Final CTA - Waitlist */}
       <SectionWrapper className="bg-gradient-to-br from-ai-blue to-indigo-700 text-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl md:text-5xl font-bold mb-8 font-heading">
-              Why This Matters Now
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 font-heading">
+              Ready to Master AI?
             </h2>
-            <div className="space-y-6 text-lg md:text-xl leading-relaxed">
-              <p className="text-blue-100">
-                AI is the most powerful tool humanity has ever created. Those who learn how to use it <strong className="text-white">intentionally and responsibly</strong> will thrive in the coming years.
-              </p>
-              <p className="text-blue-100">
-                Those who don't risk becoming passive users — or victims of it.
-              </p>
-              <p className="text-white font-semibold text-xl md:text-2xl">
-                This program gives you the clarity, skills, and confidence to use AI deliberately — not passively.
-              </p>
-            </div>
+            <p className="text-xl md:text-2xl text-blue-100 mb-8 leading-relaxed">
+              Join the waitlist today. First session is completely free.
+            </p>
+            <a href="#waitlist" className="inline-block">
+              <button className="bg-white text-ai-blue hover:bg-gray-100 px-12 py-5 rounded-xl text-xl font-bold shadow-2xl hover:shadow-3xl transition-all transform hover:scale-105">
+                Join Free Waitlist Now
+              </button>
+            </a>
+            <p className="text-blue-200 text-sm mt-6">
+              Limited spots available • No credit card required
+            </p>
           </div>
         </div>
       </SectionWrapper>
-
-      {/* CTA Section */}
-      <CTASection
-        title="Ready to Take Control of AI?"
-        description="Interested in our program? Get in touch to learn more about upcoming cohorts."
-        primaryCTA={{
-          text: "Contact Us",
-          href: "mailto:touradam3@gmail.com",
-          variant: "blue",
-        }}
-      />
     </>
   );
 }
