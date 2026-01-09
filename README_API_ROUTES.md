@@ -2,10 +2,10 @@
 
 ## 📁 Directory Structure
 
-### `app/api-server-only/` 
+### `server-only-code/api/` 
 This directory contains API routes that **only work with server hosting** (Hostinger, Vercel, etc.).
 
-**Important:** This folder is intentionally named `api-server-only` instead of `api` to exclude it from GitHub Pages static export builds.
+**Important:** This folder is located **outside the `app/` directory** to completely exclude it from GitHub Pages static export builds.
 
 ---
 
@@ -29,15 +29,16 @@ This directory contains API routes that **only work with server hosting** (Hosti
 
 ### For GitHub Pages (Current Setup):
 ```bash
-# API routes are in: app/api-server-only/
+# API routes are stored in: server-only-code/api/
+# (Outside the app/ directory, not included in build)
 # Static export works, emails don't work
 npm run build  # Creates out/ directory
 ```
 
 ### For Hostinger / Server Hosting:
 ```bash
-# 1. Rename the folder:
-mv app/api-server-only app/api
+# 1. Move the API folder back into app:
+mv server-only-code/api app/api
 
 # 2. Update next.config.ts:
 # Change: output: 'export'
@@ -59,8 +60,8 @@ npm run build  # Creates .next/ directory
 - API routes require a server to run
 
 ### The Solution:
-- Rename `app/api/` to `app/api-server-only/`
-- Next.js ignores this folder during static export
+- Move `app/api/` to `server-only-code/api/` (outside app directory)
+- Next.js completely ignores files outside `app/` directory
 - Email functionality code is preserved but not built
 - GitHub Pages deployment succeeds
 
@@ -98,7 +99,7 @@ npm run build  # Creates .next/ directory
 
 ### API Route (Preserved):
 ```
-app/api-server-only/waitlist/route.ts
+server-only-code/api/waitlist/route.ts
 ```
 This file contains the email sending logic for:
 - Admin notifications to touradam3@gmail.com
@@ -118,7 +119,7 @@ ADMIN_EMAIL=touradam3@gmail.com
 
 | Feature | GitHub Pages | Hostinger |
 |---------|-------------|-----------|
-| **API Folder** | `api-server-only/` | `api/` |
+| **API Folder** | `server-only-code/api/` | `app/api/` |
 | **Output** | `export` | `standalone` |
 | **Email** | ❌ No | ✅ Yes |
 | **Cost** | Free | Paid |
